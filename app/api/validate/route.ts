@@ -1,3 +1,4 @@
+export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { users, profiles, apiKeys, guardrailExecutions } from '@/lib/db/schema';
@@ -84,7 +85,34 @@ export async function POST(request: NextRequest) {
     }
 
     // Execute guardrails
-    const result = await executeGuardrails(guardrails, text);
+    const normalizedGuardrails = (guardrails || [])
+  .filter(Boolean)
+  .map((g: any) => {
+    if (typeof g === 'string') {
+      return { name: g };
+    }
+
+    // 🔥 SUPPORT DB FORMAT
+    if (g?.class) {
+      return { name: g.class, config: g.config };
+    }
+
+    if (g?.name) {
+      return g;
+    }
+
+    return null;
+  })
+  .filter(Boolean);
+
+
+const result = await executeGuardrails(
+  normalizedGuardrails,
+  text,
+  {
+    validationType,
+  }
+);
 
     // Log execution
     await db.insert(guardrailExecutions).values({

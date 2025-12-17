@@ -1,60 +1,55 @@
-import { InputSizeGuardrail } from './input-size';
-import { SecretsInInputGuardrail } from './secrets-in-input';
-import { OutputPIIRedactionGuardrail } from './output-pii-redaction';
-import { BaseGuardrail } from './base';
+export { executeGuardrails } from './core/executor';
+export { guardrailRegistry } from './core/registry';
 
-// Guardrail Registry
-export const GUARDRAIL_REGISTRY: Record<string, typeof BaseGuardrail> = {
-  InputSizeGuardrail,
-  SecretsInInputGuardrail,
-  OutputPIIRedactionGuardrail,
-};
+import { guardrailRegistry } from './core/registry';
+import { InputSizeGuardrail } from './input/input-size.guardrail';
+import { SecretsInInputGuardrail } from './input/secrets.guardrail';
+import { NSFWGuardrail } from './input/nsfw.guardrail';
+import { OutputPIIRedactionGuardrail } from './output/pii-redaction.guardrail';
+import { ToolAccessGuardrail } from './tool/tool-access.guardrail';
 
-// Get guardrail instance by class name
-export function getGuardrailInstance(className: string, config: any = {}): BaseGuardrail {
-  const GuardrailClass = GUARDRAIL_REGISTRY[className];
-  if (!GuardrailClass) {
-    throw new Error(`Guardrail ${className} not found in registry`);
+// guardrailRegistry.register('InputSize', c => new InputSizeGuardrail(c));
+// guardrailRegistry.register('Secrets', c => new SecretsInInputGuardrail(c));
+// guardrailRegistry.register('NSFW', c => new NSFWGuardrail(c));
+// guardrailRegistry.register('PIIRedaction', c => new OutputPIIRedactionGuardrail(c));
+// guardrailRegistry.register('ToolAccess', c => new ToolAccessGuardrail(c));
+
+export function normalizeGuardrailName(name: string): string {
+  if (name.endsWith('Guardrail')) {
+    return name.replace('Guardrail', '');
   }
-  return new GuardrailClass(config);
+  return name;
 }
 
-// Execute multiple guardrails in parallel
-export async function executeGuardrails(
-  guardrails: Array<{ class: string; config?: any }>,
-  text: string,
-  context?: any
-) {
-  const startTime = Date.now();
-  
-  const results = await Promise.all(
-    guardrails.map(async (guardDef) => {
-      try {
-        const guard = getGuardrailInstance(guardDef.class, guardDef.config);
-        return await guard.execute(text, context);
-      } catch (error: any) {
-        return {
-          passed: false,
-          guardrailName: guardDef.class,
-          severity: 'error' as const,
-          message: `Error executing guardrail: ${error.message}`,
-          details: { error: error.message },
-        };
-      }
-    })
-  );
 
-  const executionTime = Date.now() - startTime;
-  const allPassed = results.every((r) => r.passed);
+guardrailRegistry.register(
+  'InputSize',
+  c => new InputSizeGuardrail(c)
+);
 
-  return {
-    passed: allPassed,
-    results,
-    executionTimeMs: executionTime,
-    summary: {
-      total: results.length,
-      passed: results.filter((r) => r.passed).length,
-      failed: results.filter((r) => !r.passed).length,
-    },
-  };
-}
+guardrailRegistry.register(
+  'SecretsInInput',
+  c => new SecretsInInputGuardrail(c)
+);
+
+guardrailRegistry.register(
+  'NSFW',
+  c => new NSFWGuardrail(c)
+);
+
+guardrailRegistry.register(
+  'OutputPIIRedaction',
+  c => new OutputPIIRedactionGuardrail(c)
+);
+
+guardrailRegistry.register(
+  'ToolAccess',
+  c => new ToolAccessGuardrail(c)
+);
+
+
+import './input/input-size.guardrail';
+import './input/secrets.guardrail';
+import './input/nsfw.guardrail';
+import './output/pii-redaction.guardrail';
+import './tool/tool-access.guardrail';
