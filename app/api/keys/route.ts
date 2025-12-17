@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import { db } from '@/lib/db';
 import { users, apiKeys } from '@/lib/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import { generateApiKey } from '@/lib/utils/api-key';
 
 // Helper to get or create user
@@ -43,7 +43,12 @@ export async function GET() {
     const allKeys = await db
       .select()
       .from(apiKeys)
-      .where(eq(apiKeys.userId, dbUser.id))
+      .where(
+        and(
+          eq(apiKeys.userId, dbUser.id),
+          eq(apiKeys.isActive, true)
+        )
+      )
       .orderBy(desc(apiKeys.createdAt));
 
     return NextResponse.json({ apiKeys: allKeys });
