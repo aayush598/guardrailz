@@ -295,7 +295,7 @@ export default function LandingPage() {
         <span className="text-blue-400">fetch</span>(<br />
         &nbsp;&nbsp;
         <span className="text-green-400">
-          'https://api.guardrailz.ai/validate'
+          'https://guardrailz.vercel.app/validate'
         </span>
         ,<br />
         &nbsp;&nbsp;{'{'} headers: {'{'}{' '}
