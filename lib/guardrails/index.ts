@@ -33,7 +33,7 @@ guardrailRegistry.register(
 );
 
 guardrailRegistry.register(
-  'NSFW',
+  'NSFWAdvanced',
   c => new NSFWAdvancedGuardrail(c)
 );
 

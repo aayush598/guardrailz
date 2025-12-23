@@ -7,6 +7,16 @@ export const BUILTIN_PROFILES = {
     inputGuardrails: [
       { class: 'SecretsInInputGuardrail', config: { severity: 'critical' } },
       { class: 'InputSizeGuardrail', config: { maxChars: 50000 } },
+      {
+      class: 'NSFWAdvancedGuardrail',
+      config: {
+        severityThreshold: 2,              // block explicit, warn contextual
+        enableContextAnalysis: true,
+        allowMedicalEducational: true,
+        enableObfuscationDetection: true,
+        minConfidence: 0.7,
+      },
+    },
     ],
     outputGuardrails: [
       { class: 'OutputPIIRedactionGuardrail', config: {} },
