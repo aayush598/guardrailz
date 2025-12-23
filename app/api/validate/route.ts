@@ -1,123 +1,78 @@
 export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { users, profiles, apiKeys, guardrailExecutions } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
-import { executeGuardrails } from '@/lib/guardrails';
+import { apiKeys, profiles, guardrailExecutions } from '@/lib/db/schema';
+import { and, eq } from 'drizzle-orm';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { runGuardrails } from '@/lib/guardrails/service';
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const apiKey = request.headers.get('x-api-key');
-    
+    const apiKey = req.headers.get('x-api-key');
     if (!apiKey) {
-      return NextResponse.json(
-        { error: 'API key required in x-api-key header' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'API key required' }, { status: 401 });
     }
 
-    // Validate API key
-    const [keyRecord] = await db
+    const [key] = await db
       .select()
       .from(apiKeys)
       .where(and(eq(apiKeys.key, apiKey), eq(apiKeys.isActive, true)))
       .limit(1);
 
-    if (!keyRecord) {
-      return NextResponse.json(
-        { error: 'Invalid or inactive API key' },
-        { status: 401 }
-      );
+    if (!key) {
+      return NextResponse.json({ error: 'Invalid API key' }, { status: 401 });
     }
 
-    // Check rate limits
-    const rateLimitResult = await checkRateLimit(keyRecord.id, keyRecord.userId);
-    if (!rateLimitResult.allowed) {
+    const rate = await checkRateLimit(key.id, key.userId);
+    if (!rate.allowed) {
       return NextResponse.json(
-        { error: rateLimitResult.reason, limits: rateLimitResult.limits },
+        { error: rate.reason, limits: rate.limits },
         { status: 429 }
       );
     }
 
-    const body = await request.json();
-    const { text, profileId, validationType = 'input' } = body;
+    const { text, profileId, validationType = 'input' } = await req.json();
 
     if (!text) {
-      return NextResponse.json(
-        { error: 'Text field is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Text is required' }, { status: 400 });
     }
 
-    // Get profile
-    let profile;
-    if (profileId) {
-      [profile] = await db
-        .select()
-        .from(profiles)
-        .where(eq(profiles.id, profileId))
-        .limit(1);
-    } else {
-      // Use default profile
-      [profile] = await db
-        .select()
-        .from(profiles)
-        .where(and(eq(profiles.name, 'default'), eq(profiles.isBuiltIn, true)))
-        .limit(1);
-    }
+    const [profile] = await db
+      .select()
+      .from(profiles)
+      .where(
+        profileId
+          ? eq(profiles.id, profileId)
+          : and(eq(profiles.name, 'default'), eq(profiles.isBuiltIn, true))
+      )
+      .limit(1);
 
     if (!profile) {
-      return NextResponse.json(
-        { error: 'Profile not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
     }
 
-    // Select guardrails based on validation type
-    let guardrails = [];
-    if (validationType === 'input') {
-      guardrails = profile.inputGuardrails || [];
-    } else if (validationType === 'output') {
-      guardrails = profile.outputGuardrails || [];
-    } else {
-      guardrails = [...(profile.inputGuardrails || []), ...(profile.outputGuardrails || [])];
-    }
+    const guardrails =
+      validationType === 'input'
+        ? profile.inputGuardrails
+        : validationType === 'output'
+        ? profile.outputGuardrails
+        : [...profile.inputGuardrails, ...profile.outputGuardrails];
 
-    // Execute guardrails
-    const normalizedGuardrails = (guardrails || [])
-  .filter(Boolean)
-  .map((g: any) => {
-    if (typeof g === 'string') {
-      return { name: g };
-    }
+    const result = await runGuardrails(
+      guardrails,
+      text,
+      {
+        validationType,
+        userId: key.userId,
+        apiKeyId: key.id,
+        profileId: profile.id,
+      }
+    );
 
-    // 🔥 SUPPORT DB FORMAT
-    if (g?.class) {
-      return { name: g.class, config: g.config };
-    }
-
-    if (g?.name) {
-      return g;
-    }
-
-    return null;
-  })
-  .filter(Boolean);
-
-
-const result = await executeGuardrails(
-  normalizedGuardrails,
-  text,
-  {
-    validationType,
-  }
-);
-
-    // Log execution
     await db.insert(guardrailExecutions).values({
-      userId: keyRecord.userId,
-      apiKeyId: keyRecord.id,
+      userId: key.userId,
+      apiKeyId: key.id,
       profileId: profile.id,
       inputText: validationType === 'input' ? text : null,
       outputText: validationType === 'output' ? text : null,
@@ -126,35 +81,21 @@ const result = await executeGuardrails(
       executionTimeMs: result.executionTimeMs,
     });
 
-    // Get redacted text if available
-    const redactedResult = result.results.find(r => r.redactedText);
-
     return NextResponse.json({
       success: true,
       passed: result.passed,
+      profile: { id: profile.id, name: profile.name },
       validationType,
-      profile: {
-        id: profile.id,
-        name: profile.name,
-      },
       results: result.results,
       summary: result.summary,
       executionTimeMs: result.executionTimeMs,
-      redactedText: redactedResult?.redactedText,
-      rateLimits: rateLimitResult.limits,
+      rateLimits: rate.limits,
     });
-  } catch (error: any) {
-    console.error('Validate error:', error);
+  } catch (err: any) {
+    console.error(err);
     return NextResponse.json(
-      { error: 'Validation failed', details: error.message },
+      { error: 'Validation failed', details: err.message },
       { status: 500 }
     );
   }
-}
-
-export async function GET() {
-  return NextResponse.json(
-    { error: 'Use POST method for validation' },
-    { status: 405 }
-  );
 }

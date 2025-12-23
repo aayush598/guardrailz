@@ -1,55 +1,18 @@
-export { executeGuardrails } from './core/executor';
-export { guardrailRegistry } from './core/registry';
-
 import { guardrailRegistry } from './core/registry';
+
 import { InputSizeGuardrail } from './input/input-size.guardrail';
 import { SecretsInInputGuardrail } from './input/secrets.guardrail';
 import { NSFWAdvancedGuardrail } from './input/nsfw.guardrail';
+
 import { OutputPIIRedactionGuardrail } from './output/pii-redaction.guardrail';
 import { ToolAccessControlGuardrail } from './tool/tool-access.guardrail';
 
-// guardrailRegistry.register('InputSize', c => new InputSizeGuardrail(c));
-// guardrailRegistry.register('Secrets', c => new SecretsInInputGuardrail(c));
-// guardrailRegistry.register('NSFW', c => new NSFWAdvancedGuardrail(c));
-// guardrailRegistry.register('PIIRedaction', c => new OutputPIIRedactionGuardrail(c));
-// guardrailRegistry.register('ToolAccess', c => new ToolAccessControlGuardrail(c));
+// Input
+guardrailRegistry.register('InputSize', c => new InputSizeGuardrail(c));
+guardrailRegistry.register('SecretsInInput', c => new SecretsInInputGuardrail(c));
+guardrailRegistry.register('NSFWAdvanced', c => new NSFWAdvancedGuardrail(c));
 
-export function normalizeGuardrailName(name: string): string {
-  if (name.endsWith('Guardrail')) {
-    return name.replace('Guardrail', '');
-  }
-  return name;
-}
+// Output
+guardrailRegistry.register('OutputPIIRedaction', c => new OutputPIIRedactionGuardrail(c));
+guardrailRegistry.register('ToolAccess', c => new ToolAccessControlGuardrail(c));
 
-
-guardrailRegistry.register(
-  'InputSize',
-  c => new InputSizeGuardrail(c)
-);
-
-guardrailRegistry.register(
-  'SecretsInInput',
-  c => new SecretsInInputGuardrail(c)
-);
-
-guardrailRegistry.register(
-  'NSFWAdvanced',
-  c => new NSFWAdvancedGuardrail(c)
-);
-
-guardrailRegistry.register(
-  'OutputPIIRedaction',
-  c => new OutputPIIRedactionGuardrail(c)
-);
-
-guardrailRegistry.register(
-  'ToolAccess',
-  c => new ToolAccessControlGuardrail(c)
-);
-
-
-import './input/input-size.guardrail';
-import './input/secrets.guardrail';
-import './input/nsfw.guardrail';
-import './output/pii-redaction.guardrail';
-import './tool/tool-access.guardrail';

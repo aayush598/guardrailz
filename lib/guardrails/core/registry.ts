@@ -1,9 +1,9 @@
 import { BaseGuardrail } from './base';
 
-type GuardrailFactory = (config?: any) => BaseGuardrail;
+export type GuardrailFactory = (config?: any) => BaseGuardrail;
 
-class GuardrailRegistry {
-  private registry = new Map<string, GuardrailFactory>();
+export class GuardrailRegistry {
+  private readonly registry = new Map<string, GuardrailFactory>();
 
   register(name: string, factory: GuardrailFactory) {
     this.registry.set(name, factory);
@@ -15,6 +15,10 @@ class GuardrailRegistry {
       throw new Error(`Guardrail "${name}" not registered`);
     }
     return factory(config);
+  }
+
+  has(name: string) {
+    return this.registry.has(name);
   }
 }
 
