@@ -11,6 +11,31 @@ export interface RateLimitResult {
   };
 }
 
+function utcMinuteBucket(date: Date) {
+  return new Date(Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    0,
+    0
+  ));
+}
+
+function utcDayBucket(date: Date) {
+  return new Date(Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    0,
+    0,
+    0,
+    0
+  ));
+}
+
+
 export async function checkRateLimit(
   apiKeyId: string,
   userId: string
@@ -49,7 +74,7 @@ export async function checkRateLimit(
     const now = new Date();
     
     // Check per-minute limit (API key)
-    const minuteStart = new Date(now.getTime() - 60000);
+    const minuteBucket = utcMinuteBucket(now);
     const [minuteTracking] = await db
       .select()
       .from(rateLimitTracking)
@@ -57,7 +82,7 @@ export async function checkRateLimit(
         and(
           eq(rateLimitTracking.apiKeyId, apiKeyId),
           eq(rateLimitTracking.windowType, 'minute'),
-          gte(rateLimitTracking.windowStart, minuteStart)
+          eq(rateLimitTracking.windowStart, minuteBucket)
         )
       )
       .limit(1);
@@ -75,7 +100,7 @@ export async function checkRateLimit(
     }
 
     // Check per-day limit (API key)
-    const dayStart = new Date(now.getTime() - 86400000);
+    const dayBucket = utcDayBucket(now);
     const [dayTracking] = await db
       .select()
       .from(rateLimitTracking)
@@ -83,7 +108,7 @@ export async function checkRateLimit(
         and(
           eq(rateLimitTracking.apiKeyId, apiKeyId),
           eq(rateLimitTracking.windowType, 'day'),
-          gte(rateLimitTracking.windowStart, dayStart)
+          eq(rateLimitTracking.windowStart, dayBucket)
         )
       )
       .limit(1);
@@ -108,7 +133,7 @@ export async function checkRateLimit(
         and(
           eq(rateLimitTracking.userId, userId),
           eq(rateLimitTracking.windowType, 'minute'),
-          gte(rateLimitTracking.windowStart, minuteStart)
+          eq(rateLimitTracking.windowStart, minuteBucket)
         )
       );
 
@@ -131,7 +156,7 @@ export async function checkRateLimit(
         and(
           eq(rateLimitTracking.userId, userId),
           eq(rateLimitTracking.windowType, 'day'),
-          gte(rateLimitTracking.windowStart, dayStart)
+          eq(rateLimitTracking.windowStart, dayBucket)
         )
       );
 
@@ -164,8 +189,8 @@ export async function checkRateLimit(
 }
 
 async function incrementRateLimit(apiKeyId: string, userId: string, now: Date) {
-  const minuteStart = new Date(Math.floor(now.getTime() / 60000) * 60000);
-  const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const minuteStart = utcMinuteBucket(now);
+  const dayStart = utcDayBucket(now);
 
   // Increment minute counter
   const [existingMinute] = await db
