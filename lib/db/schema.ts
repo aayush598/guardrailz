@@ -37,6 +37,7 @@ export const apiKeys = pgTable('api_keys', {
   requestsPerDay: integer('requests_per_day').default(10000).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   lastUsedAt: timestamp('last_used_at'),
+  expiresAt: timestamp('expires_at'),
 });
 
 // Guardrail Executions (logs)
