@@ -42,9 +42,13 @@ export async function DELETE(
     const dbUser = await getOrCreateUser(user);
 
     await db
-      .update(apiKeys)
-      .set({ isActive: false })
-      .where(and(eq(apiKeys.id, params.id), eq(apiKeys.userId, dbUser.id)));
+      .delete(apiKeys)
+      .where(
+        and(
+          eq(apiKeys.id, params.id), 
+          eq(apiKeys.userId, dbUser.id)
+        )
+      );
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
@@ -53,4 +57,33 @@ export async function DELETE(
       { status: 500 }
     );
   }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const user = await currentUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const dbUser = await getOrCreateUser(user);
+  const body = await request.json();
+
+  const update: any = {};
+  if (typeof body.name === 'string') update.name = body.name;
+  if (typeof body.isActive === 'boolean') update.isActive = body.isActive;
+
+  await db
+    .update(apiKeys)
+    .set(update)
+    .where(
+      and(
+        eq(apiKeys.id, params.id),
+        eq(apiKeys.userId, dbUser.id)
+      )
+    );
+
+  return NextResponse.json({ success: true });
 }

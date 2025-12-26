@@ -119,21 +119,39 @@ export default function ApiKeysPage() {
   };
 
   const deleteApiKey = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+  if (!confirm(`Delete API key "${name}"? This cannot be undone.`)) return;
 
-    try {
-      const res = await fetch(`/api/keys/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Failed to delete API key');
+  try {
+    const res = await fetch(`/api/keys/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error();
 
-      setApiKeys(apiKeys.filter((k) => k.id !== id));
-    } catch (error) {
-      alert('Failed to delete API key');
-    }
-  };
+    setApiKeys((prev) => prev.filter((k) => k.id !== id));
+  } catch {
+    alert('Failed to delete API key');
+  }
+};
+
 
   const toggleKeyStatus = async (key: ApiKey) => {
-    alert('Toggle status feature - implement PATCH endpoint at /api/keys/[id]');
-  };
+  try {
+    const res = await fetch(`/api/keys/${key.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isActive: !key.isActive }),
+    });
+
+    if (!res.ok) throw new Error('Failed to update key');
+
+    setApiKeys((prev) =>
+      prev.map((k) =>
+        k.id === key.id ? { ...k, isActive: !k.isActive } : k
+      )
+    );
+  } catch (err) {
+    alert('Failed to update API key');
+  }
+};
+
 
   const openRenameDialog = (key: ApiKey) => {
     setRenamingKey(key);
@@ -142,11 +160,30 @@ export default function ApiKeysPage() {
   };
 
   const renameApiKey = async () => {
-    if (!renamingKey || !newName.trim()) return;
-    
-    alert('Rename feature - implement PATCH endpoint at /api/keys/[id]');
+  if (!renamingKey || !newName.trim()) return;
+
+  try {
+    const res = await fetch(`/api/keys/${renamingKey.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: newName }),
+    });
+
+    if (!res.ok) throw new Error('Failed to rename key');
+
+    setApiKeys((prev) =>
+      prev.map((k) =>
+        k.id === renamingKey.id ? { ...k, name: newName } : k
+      )
+    );
+
     setRenameDialogOpen(false);
-  };
+    setRenamingKey(null);
+  } catch (err) {
+    alert('Failed to rename API key');
+  }
+};
+
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);

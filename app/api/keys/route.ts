@@ -44,10 +44,7 @@ export async function GET() {
       .select()
       .from(apiKeys)
       .where(
-        and(
-          eq(apiKeys.userId, dbUser.id),
-          eq(apiKeys.isActive, true)
-        )
+        eq(apiKeys.userId, dbUser.id)
       )
       .orderBy(desc(apiKeys.createdAt));
 
