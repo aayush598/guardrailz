@@ -2,8 +2,7 @@
 import { useEffect, useState } from 'react';
 import { 
   Shield, Key, Plus, Copy, Check, Trash2, Eye, EyeOff, 
-  MoreVertical, BarChart3, Calendar, Clock, TrendingUp,
-  FileCode, Activity, Settings, Home, Menu, X, RefreshCw,
+  MoreVertical, BarChart3, Menu, RefreshCw,
   Edit2, Power, PowerOff, AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,6 +19,8 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
+import Link from "next/link";
+
 
 interface ApiKey {
   id: string;
@@ -44,7 +45,6 @@ export default function ApiKeysPage() {
   const [newKeyOpen, setNewKeyOpen] = useState(false);
   const [newKeyName, setNewKeyName] = useState('');
   const [creatingKey, setCreatingKey] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [renamingKey, setRenamingKey] = useState<ApiKey | null>(null);
   const [newName, setNewName] = useState('');
@@ -216,23 +216,9 @@ export default function ApiKeysPage() {
     });
   };
 
-  const NavLink = ({ icon: Icon, children, active = false }: any) => (
-    <button
-      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-        active
-          ? 'bg-slate-100 text-slate-900 font-medium'
-          : 'text-slate-600 hover:bg-slate-50'
-      }`}
-      onClick={() => setSidebarOpen(false)}
-    >
-      <Icon className="h-5 w-5" />
-      <span>{children}</span>
-    </button>
-  );
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="flex items-center justify-center py-20">
         <div className="text-center">
           <Shield className="h-12 w-12 text-slate-900 animate-spin mx-auto mb-4" />
           <p className="text-slate-600">Loading API keys...</p>
@@ -242,69 +228,12 @@ export default function ApiKeysPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* Sidebar */}
-      <aside className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-white border-r border-slate-200 transition-transform duration-300 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      }`}>
-        <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-6 border-b border-slate-200">
-            <div className="flex items-center space-x-3">
-              <Shield className="h-8 w-8 text-slate-900" />
-              <span className="text-xl font-bold text-slate-900">Guardrailz</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
-
-          <nav className="flex-1 p-4 space-y-1">
-            <NavLink icon={Home}>Overview</NavLink>
-            <NavLink icon={Key} active>API Keys</NavLink>
-            <NavLink icon={FileCode}>Profiles</NavLink>
-            <NavLink icon={Activity}>Playground</NavLink>
-            <NavLink icon={BarChart3}>Analytics</NavLink>
-            <NavLink icon={Settings}>Settings</NavLink>
-          </nav>
-
-          <div className="p-4 border-t border-slate-200">
-            <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center">
-                <span className="text-sm font-semibold text-slate-900">JD</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-slate-900">John Doe</p>
-                <p className="text-xs text-slate-500">john@example.com</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      <main className="flex-1 overflow-y-auto bg-slate-50">
+    <>
+      <main>
         <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-slate-200">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="lg:hidden"
-                onClick={() => setSidebarOpen(true)}
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
+             
               <div>
                 <h1 className="text-2xl font-bold text-slate-900">API Keys</h1>
                 <p className="text-sm text-slate-600">Manage and monitor your API keys</p>
@@ -547,14 +476,16 @@ export default function ApiKeysPage() {
 
                           <td className="py-4 px-4">
                             <div className="flex items-center justify-end space-x-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0 hover:bg-slate-100"
-                                title="View Analytics"
-                              >
-                                <BarChart3 className="h-4 w-4" />
-                              </Button>
+                              <Link href={`/dashboard/api-keys/${key.id}`}>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0 hover:bg-slate-100"
+                                  title="View Analytics"
+                                >
+                                  <BarChart3 className="h-4 w-4" />
+                                </Button>
+                              </Link>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-slate-100">
@@ -643,6 +574,6 @@ export default function ApiKeysPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }
