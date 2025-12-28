@@ -1,28 +1,15 @@
-import './index';
-
-import { guardrailRegistry } from './core/registry';
-import { executeGuardrails } from './core/executor';
-import { GuardrailContext } from './core/context';
-import { normalizeGuardrailDescriptor } from './normalize';
+import "./index";
+import { executeGuardrails } from "./core/executor";
+import { GuardrailContext } from "./core/context";
+import { getGuardrailInstances } from "./instance-cache";
+import type { GuardrailDescriptor } from "./normalize";
 
 export async function runGuardrails(
-  rawDescriptors: any[],
+  profileId: string,
+  descriptors: GuardrailDescriptor[],
   text: string,
   context: GuardrailContext
 ) {
-  const descriptors = rawDescriptors
-    .map(normalizeGuardrailDescriptor)
-    .filter((d): d is { name: string; config?: any } => {
-      if (!d) return false;
-      if (!guardrailRegistry.has(d.name)) {
-        throw new Error(`Guardrail "${d.name}" not registered`);
-      }
-      return true;
-    });
-
-  const instances = descriptors.map(d =>
-    guardrailRegistry.create(d.name, d.config)
-  );
-
+  const instances = getGuardrailInstances(profileId, descriptors);
   return executeGuardrails(instances, text, context);
 }

@@ -8,6 +8,7 @@ import { checkRateLimit } from '@/lib/rate-limit';
 import { runGuardrails } from '@/lib/guardrails/service';
 import { PerfTracker } from '@/lib/perf';
 import { redis } from "@/lib/redis";
+import { getRuntimeProfile } from '@/lib/profiles/profile-cache';
 
 
 export async function POST(req: NextRequest) {
@@ -62,15 +63,7 @@ export async function POST(req: NextRequest) {
     }
 
     perf.start("profile_lookup");
-    const [profile] = await db
-      .select()
-      .from(profiles)
-      .where(
-        profileId
-          ? eq(profiles.id, profileId)
-          : and(eq(profiles.name, 'default'), eq(profiles.isBuiltIn, true))
-      )
-      .limit(1);
+    const profile = await getRuntimeProfile(profileId);
     perf.end("profile_lookup");
 
     if (!profile) {
@@ -78,14 +71,15 @@ export async function POST(req: NextRequest) {
     }
 
     const guardrails =
-      validationType === 'input'
-        ? profile.inputGuardrails
-        : validationType === 'output'
-        ? profile.outputGuardrails
-        : [...profile.inputGuardrails, ...profile.outputGuardrails];
+      validationType === "input"
+        ? profile.input
+        : validationType === "output"
+        ? profile.output
+        : profile.both;
 
     perf.start("guardrails_total");
     const result = await runGuardrails(
+      profile.id,
       guardrails,
       text,
       {
