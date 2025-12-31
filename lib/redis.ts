@@ -1,8 +1,15 @@
 import Redis from "ioredis";
 
-export const redis = new Redis({
-  host: "127.0.0.1",
-  port: 6379,
+if (!process.env.REDIS_URL) {
+  throw new Error("REDIS_URL is not defined");
+}
+
+export const redis = new Redis(process.env.REDIS_URL, {
   maxRetriesPerRequest: 2,
   enableReadyCheck: true,
+
+  // IMPORTANT: Upstash requires TLS
+  tls: {
+    rejectUnauthorized: false,
+  },
 });

@@ -9,7 +9,7 @@ import { runGuardrails } from '@/lib/guardrails/service';
 import { PerfTracker } from '@/lib/perf';
 import { redis } from "@/lib/redis";
 import { getRuntimeProfile } from '@/lib/profiles/profile-cache';
-
+import { encrypt } from '@/lib/utils/crypto';
 
 export async function POST(req: NextRequest) {
   const perf = new PerfTracker();
@@ -21,7 +21,41 @@ export async function POST(req: NextRequest) {
     }
 
     perf.start("api_key_lookup");
-    const keyData = await redis.hgetall(`apikey:${apiKey}`);
+    let keyData = await redis.hgetall(`apikey:${apiKey}`);
+
+    // Fallback to database if not in Redis
+    if (!keyData || Object.keys(keyData).length === 0) {
+      const [dbKey] = await db
+        .select()
+        .from(apiKeys)
+        .where(eq(apiKeys.keyEncrypted, encrypt(apiKey)))
+        .limit(1);
+
+      console.log(` APi key loopup : ${dbKey} | APi key : ${apiKey} | Encrypted : ${encrypt(apiKey)}`)
+
+      if (!dbKey || !dbKey.isActive) {
+        return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
+      }
+
+      // Repopulate Redis cache
+      await redis.hset(`apikey:${apiKey}`, {
+        id: dbKey.id,
+        userId: dbKey.userId,
+        active: "true",
+        rpm: dbKey.requestsPerMinute.toString(),
+        rpd: dbKey.requestsPerDay.toString(),
+      });
+      await redis.expire(`apikey:${apiKey}`, 86400);
+
+      keyData = {
+        id: dbKey.id,
+        userId: dbKey.userId,
+        active: "true",
+        rpm: dbKey.requestsPerMinute.toString(),
+        rpd: dbKey.requestsPerDay.toString(),
+      };
+    }
+
     if (!keyData || keyData.active !== "true") {
       return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
     }

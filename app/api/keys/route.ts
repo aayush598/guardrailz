@@ -103,8 +103,6 @@ export async function POST(request: NextRequest) {
       rpd: requestsPerDay.toString(),
     });
 
-    await redis.expire(`apikey:${plainKey}`, 86400);
-
     return NextResponse.json({
       apiKey: {
         id: created.id,
