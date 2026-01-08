@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, jsonb, integer, boolean, varchar, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, jsonb, integer, boolean, varchar, uuid, index } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Users table (synced with Clerk)
@@ -41,18 +41,32 @@ export const apiKeys = pgTable('api_keys', {
 });
 
 // Guardrail Executions (logs)
-export const guardrailExecutions = pgTable('guardrail_executions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  apiKeyId: uuid('api_key_id').references(() => apiKeys.id, { onDelete: 'set null' }),
-  profileId: uuid('profile_id').references(() => profiles.id),
-  inputText: text('input_text'),
-  outputText: text('output_text'),
-  guardrailResults: jsonb('guardrail_results').notNull().$type<any[]>(),
-  passed: boolean('passed').notNull(),
-  executionTimeMs: integer('execution_time_ms'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const guardrailExecutions = pgTable(
+  'guardrail_executions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    apiKeyId: uuid('api_key_id').references(() => apiKeys.id, { onDelete: 'set null' }),
+    profileId: uuid('profile_id').references(() => profiles.id),
+    inputText: text('input_text'),
+    outputText: text('output_text'),
+    guardrailResults: jsonb('guardrail_results').notNull().$type<any[]>(),
+    passed: boolean('passed').notNull(),
+    executionTimeMs: integer('execution_time_ms'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userCreatedIdx: index('idx_exec_user_created')
+      .on(table.userId, table.createdAt),
+
+    userPassedIdx: index('idx_exec_user_passed')
+      .on(table.userId, table.passed),
+
+    userProfileIdx: index('idx_exec_user_profile')
+      .on(table.userId, table.profileId),
+  })
+);
+
 
 // Rate Limit Tracking
 export const rateLimitTracking = pgTable('rate_limit_tracking', {

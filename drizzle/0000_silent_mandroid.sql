@@ -8,6 +8,7 @@ CREATE TABLE "api_keys" (
 	"requests_per_day" integer DEFAULT 10000 NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"last_used_at" timestamp,
+	"expires_at" timestamp,
 	CONSTRAINT "api_keys_key_unique" UNIQUE("key")
 );
 --> statement-breakpoint

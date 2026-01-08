@@ -86,18 +86,6 @@ export default function DashboardLayout({
 
       {/* Content */}
       <main className="flex-1 bg-slate-50 overflow-y-auto">
-        <div className="sticky top-0 z-20 bg-white border-b px-6 py-4 flex items-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="lg:hidden mr-2"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Menu />
-          </Button>
-          <h1 className="text-lg font-semibold text-slate-900">Dashboard</h1>
-        </div>
-
         <div className="p-6">{children}</div>
       </main>
     </div>
