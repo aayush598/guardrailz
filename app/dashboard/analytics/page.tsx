@@ -13,7 +13,9 @@ import {
   Clock,
   BarChart3,
   PieChart,
-  Calendar
+  Calendar,
+  Download,
+  RefreshCw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -69,6 +71,7 @@ interface AnalyticsData {
 export default function AnalyticsPage() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [timeRange, setTimeRange] = useState('7d');
 
   useEffect(() => {
@@ -76,6 +79,7 @@ export default function AnalyticsPage() {
   }, [timeRange]);
 
   const fetchAnalytics = async () => {
+    setRefreshing(true);
     try {
       const res = await fetch(`/api/analytics?range=${timeRange}`);
       if (!res.ok) throw new Error('Failed to fetch analytics');
@@ -86,15 +90,16 @@ export default function AnalyticsPage() {
       toast.error('Failed to load analytics');
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <BarChart3 className="h-12 w-12 text-indigo-600 animate-pulse mx-auto mb-4" />
-          <p className="text-slate-600 dark:text-slate-400">Loading analytics...</p>
+          <BarChart3 className="h-16 w-16 text-slate-400 animate-pulse mx-auto mb-4" />
+          <p className="text-lg text-slate-600">Loading analytics...</p>
         </div>
       </div>
     );
@@ -109,7 +114,7 @@ export default function AnalyticsPage() {
   const formatChange = (change: number) => {
     const isPositive = change >= 0;
     return (
-      <span className={`flex items-center text-sm ${isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+      <span className={`flex items-center text-sm font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
         {isPositive ? <TrendingUp className="h-4 w-4 mr-1" /> : <TrendingDown className="h-4 w-4 mr-1" />}
         {Math.abs(change).toFixed(1)}%
       </span>
@@ -117,171 +122,153 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-screen bg-slate-50">
       <Toaster />
 
-      {/* Header */}
-      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="flex items-center space-x-3 group">
-                <Shield className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
-                <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-                  Guardrailz
-                </span>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <nav className="hidden md:flex items-center space-x-2">
-                <Button variant="ghost" asChild>
-                  <Link href="/dashboard">Overview</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link href="/dashboard/api-keys">API Keys</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link href="/dashboard/profiles">Profiles</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link href="/dashboard/playground">Playground</Link>
-                </Button>
-                <Button variant="ghost" className="text-indigo-600 font-medium" asChild>
-                  <Link href="/dashboard/analytics">Analytics</Link>
-                </Button>
-              </nav>
-              <UserButton afterSignOutUrl="/" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Back Button & Header */}
-        <div className="flex items-center space-x-4 mb-6">
-          <Button variant="ghost" asChild className="group">
-            <Link href="/dashboard">
+      <div className="container mx-auto px-4 sm:px-6 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <Link href="/dashboard">
+            <Button variant="ghost" size="sm" className="mb-4 group">
               <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
               Back to Dashboard
-            </Link>
-          </Button>
-        </div>
+            </Button>
+          </Link>
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
-              Analytics & Insights
-            </h1>
-            <p className="text-slate-600 dark:text-slate-400">
-              Deep dive into your guardrails performance
-            </p>
-          </div>
-          <div className="mt-4 md:mt-0">
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-[180px]">
-                <Calendar className="h-4 w-4 mr-2" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="24h">Last 24 Hours</SelectItem>
-                <SelectItem value="7d">Last 7 Days</SelectItem>
-                <SelectItem value="30d">Last 30 Days</SelectItem>
-                <SelectItem value="90d">Last 90 Days</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+                Analytics & Insights
+              </h1>
+              <p className="text-slate-600">
+                Deep dive into your guardrails performance
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={fetchAnalytics}
+                disabled={refreshing}
+                className="border-slate-300"
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className="w-[180px] border-slate-300">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="24h">Last 24 Hours</SelectItem>
+                  <SelectItem value="7d">Last 7 Days</SelectItem>
+                  <SelectItem value="30d">Last 30 Days</SelectItem>
+                  <SelectItem value="90d">Last 90 Days</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button variant="outline" size="sm" className="border-slate-300">
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Overview Stats */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                  Total Executions
-                </CardTitle>
-                <Activity className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card className="border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-blue-100 p-3 rounded-xl">
+                  <Activity className="h-5 w-5 text-blue-600" />
+                </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-slate-900 dark:text-white mb-1">
-                {formatNumber(analytics?.overview.totalExecutions || 0)}
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-slate-600">Total Executions</p>
+                <p className="text-3xl font-bold text-slate-900">
+                  {formatNumber(analytics?.overview.totalExecutions || 0)}
+                </p>
+                {formatChange(analytics?.overview.changeFromLastPeriod.executions || 0)}
               </div>
-              {formatChange(analytics?.overview.changeFromLastPeriod.executions || 0)}
             </CardContent>
           </Card>
 
-          <Card className="border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                  Success Rate
-                </CardTitle>
-                <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+          <Card className="border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-green-100 p-3 rounded-xl">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-1">
-                {analytics?.overview.successRate.toFixed(1) || 0}%
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-slate-600">Success Rate</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {analytics?.overview.successRate.toFixed(1) || 0}%
+                </p>
+                {formatChange(analytics?.overview.changeFromLastPeriod.successRate || 0)}
               </div>
-              {formatChange(analytics?.overview.changeFromLastPeriod.successRate || 0)}
             </CardContent>
           </Card>
 
-          <Card className="border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                  Avg Response Time
-                </CardTitle>
-                <Clock className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+          <Card className="border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-purple-100 p-3 rounded-xl">
+                  <Clock className="h-5 w-5 text-purple-600" />
+                </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
-                {analytics?.overview.avgExecutionTime || 0}ms
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-slate-600">Avg Response Time</p>
+                <p className="text-3xl font-bold text-purple-600">
+                  {analytics?.overview.avgExecutionTime || 0}ms
+                </p>
+                {formatChange(analytics?.overview.changeFromLastPeriod.avgTime || 0)}
               </div>
-              {formatChange(analytics?.overview.changeFromLastPeriod.avgTime || 0)}
             </CardContent>
           </Card>
 
-          <Card className="border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                  Total Failures
-                </CardTitle>
-                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+          <Card className="border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-red-100 p-3 rounded-xl">
+                  <AlertTriangle className="h-5 w-5 text-red-600" />
+                </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-red-600 dark:text-red-400 mb-1">
-                {formatNumber(analytics?.overview.totalFailed || 0)}
-              </div>
-              <div className="text-sm text-slate-600 dark:text-slate-400">
-                {((analytics?.overview.totalFailed || 0) / (analytics?.overview.totalExecutions || 1) * 100).toFixed(1)}% of total
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-slate-600">Total Failures</p>
+                <p className="text-3xl font-bold text-red-600">
+                  {formatNumber(analytics?.overview.totalFailed || 0)}
+                </p>
+                <p className="text-sm text-slate-500">
+                  {((analytics?.overview.totalFailed || 0) / (analytics?.overview.totalExecutions || 1) * 100).toFixed(1)}% of total
+                </p>
               </div>
             </CardContent>
           </Card>
         </div>
 
+        {/* Tabs Section */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <TabsTrigger value="overview">
+          <TabsList className="bg-white border border-slate-200 p-1">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-slate-900 data-[state=active]:text-white">
               <BarChart3 className="h-4 w-4 mr-2" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="guardrails">
+            <TabsTrigger value="guardrails" className="data-[state=active]:bg-slate-900 data-[state=active]:text-white">
               <Shield className="h-4 w-4 mr-2" />
               Guardrails
             </TabsTrigger>
-            <TabsTrigger value="profiles">
+            <TabsTrigger value="profiles" className="data-[state=active]:bg-slate-900 data-[state=active]:text-white">
               <PieChart className="h-4 w-4 mr-2" />
               Profiles
             </TabsTrigger>
-            <TabsTrigger value="errors">
+            <TabsTrigger value="errors" className="data-[state=active]:bg-slate-900 data-[state=active]:text-white">
               <AlertTriangle className="h-4 w-4 mr-2" />
-              Top Errors
+              Errors
             </TabsTrigger>
           </TabsList>
 
@@ -289,47 +276,47 @@ export default function AnalyticsPage() {
           <TabsContent value="overview" className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
               {/* Time Series Chart Placeholder */}
-              <Card className="lg:col-span-2 border-slate-200 dark:border-slate-800">
-                <CardHeader>
-                  <CardTitle>Execution Trends</CardTitle>
+              <Card className="lg:col-span-2 border-slate-200 bg-white shadow-sm">
+                <CardHeader className="border-b border-slate-100">
+                  <CardTitle className="text-slate-900">Execution Trends</CardTitle>
                   <CardDescription>Daily execution statistics over time</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="h-64 flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
-                    <div className="text-center text-slate-500 dark:text-slate-400">
-                      <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-20" />
-                      <p className="text-sm">Chart visualization placeholder</p>
-                      <p className="text-xs mt-1">Integrate recharts or Chart.js for visualizations</p>
+                <CardContent className="pt-6">
+                  <div className="h-80 flex items-center justify-center bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+                    <div className="text-center text-slate-500">
+                      <BarChart3 className="h-16 w-16 mx-auto mb-3 opacity-20" />
+                      <p className="font-medium mb-1">Chart Visualization</p>
+                      <p className="text-sm">Integrate recharts or Chart.js for detailed trends</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Hourly Distribution */}
-              <Card className="border-slate-200 dark:border-slate-800">
-                <CardHeader>
-                  <CardTitle>Peak Usage Hours</CardTitle>
+              {/* Peak Usage Hours */}
+              <Card className="border-slate-200 bg-white shadow-sm">
+                <CardHeader className="border-b border-slate-100">
+                  <CardTitle className="text-slate-900">Peak Usage Hours</CardTitle>
                   <CardDescription>Request distribution by hour</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {analytics?.hourlyDistribution?.slice(0, 6).map((hour) => (
-                      <div key={hour.hour} className="flex items-center justify-between">
-                        <span className="text-sm text-slate-600 dark:text-slate-400">
-                          {hour.hour}:00 - {hour.hour + 1}:00
-                        </span>
-                        <div className="flex items-center space-x-3 flex-1 mx-4">
-                          <div className="flex-1 bg-slate-200 dark:bg-slate-800 rounded-full h-2">
-                            <div
-                              className="bg-gradient-to-r from-indigo-600 to-purple-600 h-2 rounded-full transition-all duration-300"
-                              style={{
-                                width: `${(hour.executions / Math.max(...(analytics?.hourlyDistribution?.map(h => h.executions) || [1]))) * 100}%`
-                              }}
-                            />
-                          </div>
-                          <span className="text-sm font-semibold text-slate-900 dark:text-white w-16 text-right">
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    {analytics?.hourlyDistribution?.slice(0, 8).map((hour) => (
+                      <div key={hour.hour} className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-medium text-slate-700">
+                            {String(hour.hour).padStart(2, '0')}:00
+                          </span>
+                          <span className="font-semibold text-slate-900">
                             {formatNumber(hour.executions)}
                           </span>
+                        </div>
+                        <div className="w-full bg-slate-100 rounded-full h-2">
+                          <div
+                            className="bg-gradient-to-r from-slate-800 to-slate-900 h-2 rounded-full transition-all duration-500"
+                            style={{
+                              width: `${(hour.executions / Math.max(...(analytics?.hourlyDistribution?.map(h => h.executions) || [1]))) * 100}%`
+                            }}
+                          />
                         </div>
                       </div>
                     ))}
@@ -338,41 +325,49 @@ export default function AnalyticsPage() {
               </Card>
 
               {/* Success vs Failure */}
-              <Card className="border-slate-200 dark:border-slate-800">
-                <CardHeader>
-                  <CardTitle>Success vs Failure</CardTitle>
+              <Card className="border-slate-200 bg-white shadow-sm">
+                <CardHeader className="border-b border-slate-100">
+                  <CardTitle className="text-slate-900">Success vs Failure</CardTitle>
                   <CardDescription>Overall execution results</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-6">
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
-                      <div className="flex items-center space-x-3">
-                        <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
-                        <div>
-                          <div className="text-sm text-slate-600 dark:text-slate-400">Passed</div>
-                          <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                            {formatNumber(analytics?.overview.totalPassed || 0)}
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="bg-green-100 p-2 rounded-lg">
+                            <CheckCircle2 className="h-6 w-6 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-slate-600">Passed</p>
+                            <p className="text-2xl font-bold text-green-600">
+                              {formatNumber(analytics?.overview.totalPassed || 0)}
+                            </p>
                           </div>
                         </div>
+                        <Badge className="bg-green-600 text-white text-lg px-4 py-2">
+                          {analytics?.overview.successRate.toFixed(1)}%
+                        </Badge>
                       </div>
-                      <Badge variant="default" className="text-lg px-4 py-2">
-                        {analytics?.overview.successRate.toFixed(1)}%
-                      </Badge>
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 dark:border-red-800">
-                      <div className="flex items-center space-x-3">
-                        <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
-                        <div>
-                          <div className="text-sm text-slate-600 dark:text-slate-400">Failed</div>
-                          <div className="text-2xl font-bold text-red-600 dark:text-red-400">
-                            {formatNumber(analytics?.overview.totalFailed || 0)}
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="bg-red-100 p-2 rounded-lg">
+                            <AlertTriangle className="h-6 w-6 text-red-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-slate-600">Failed</p>
+                            <p className="text-2xl font-bold text-red-600">
+                              {formatNumber(analytics?.overview.totalFailed || 0)}
+                            </p>
                           </div>
                         </div>
+                        <Badge variant="destructive" className="text-lg px-4 py-2">
+                          {(100 - (analytics?.overview.successRate || 0)).toFixed(1)}%
+                        </Badge>
                       </div>
-                      <Badge variant="destructive" className="text-lg px-4 py-2">
-                        {(100 - (analytics?.overview.successRate || 0)).toFixed(1)}%
-                      </Badge>
                     </div>
                   </div>
                 </CardContent>
@@ -382,46 +377,52 @@ export default function AnalyticsPage() {
 
           {/* Guardrails Tab */}
           <TabsContent value="guardrails" className="space-y-6">
-            <Card className="border-slate-200 dark:border-slate-800">
-              <CardHeader>
-                <CardTitle>Guardrail Performance</CardTitle>
+            <Card className="border-slate-200 bg-white shadow-sm">
+              <CardHeader className="border-b border-slate-100">
+                <CardTitle className="text-slate-900">Guardrail Performance</CardTitle>
                 <CardDescription>Execution statistics by guardrail</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 <div className="space-y-3">
                   {analytics?.guardrailStats?.map((stat, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:bg-white hover:shadow-md transition-all"
                     >
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <span className="font-semibold text-slate-900 dark:text-white">
-                            {stat.name}
-                          </span>
-                          <Badge variant={stat.failureRate > 10 ? 'destructive' : 'default'}>
-                            {stat.failureRate.toFixed(1)}% fail rate
-                          </Badge>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="bg-white p-2 rounded-lg border border-slate-200">
+                            <Shield className="h-5 w-5 text-slate-700" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-slate-900">{stat.name}</h4>
+                            <p className="text-sm text-slate-600">
+                              {formatNumber(stat.executions)} executions
+                            </p>
+                          </div>
                         </div>
-                        <div className="grid grid-cols-3 gap-4 text-sm">
-                          <div>
-                            <span className="text-slate-600 dark:text-slate-400">Executions: </span>
-                            <span className="font-semibold text-slate-900 dark:text-white">
-                              {formatNumber(stat.executions)}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-slate-600 dark:text-slate-400">Failures: </span>
-                            <span className="font-semibold text-red-600 dark:text-red-400">
-                              {formatNumber(stat.failures)}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-slate-600 dark:text-slate-400">Avg Time: </span>
-                            <span className="font-semibold text-slate-900 dark:text-white">
-                              {stat.avgExecutionTime}ms
-                            </span>
-                          </div>
+                        <Badge
+                          variant={stat.failureRate > 10 ? 'destructive' : 'default'}
+                          className={stat.failureRate > 10 ? 'bg-red-600' : 'bg-slate-900'}
+                        >
+                          {stat.failureRate.toFixed(1)}% failure rate
+                        </Badge>
+                      </div>
+                      
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div className="text-center p-3 bg-white rounded-lg border border-slate-200">
+                          <p className="text-slate-600 mb-1">Failures</p>
+                          <p className="font-bold text-red-600">{formatNumber(stat.failures)}</p>
+                        </div>
+                        <div className="text-center p-3 bg-white rounded-lg border border-slate-200">
+                          <p className="text-slate-600 mb-1">Avg Time</p>
+                          <p className="font-bold text-slate-900">{stat.avgExecutionTime}ms</p>
+                        </div>
+                        <div className="text-center p-3 bg-white rounded-lg border border-slate-200">
+                          <p className="text-slate-600 mb-1">Success</p>
+                          <p className="font-bold text-green-600">
+                            {(100 - stat.failureRate).toFixed(1)}%
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -435,27 +436,28 @@ export default function AnalyticsPage() {
           <TabsContent value="profiles" className="space-y-6">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {analytics?.profileStats?.map((profile, idx) => (
-                <Card key={idx} className="border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{profile.name}</CardTitle>
+                <Card key={idx} className="border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+                  <CardHeader className="border-b border-slate-100">
+                    <CardTitle className="text-lg text-slate-900">{profile.name}</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">Executions</span>
-                      <span className="text-2xl font-bold text-slate-900 dark:text-white">
+                  <CardContent className="pt-6 space-y-4">
+                    <div className="text-center p-4 bg-slate-50 rounded-xl">
+                      <p className="text-sm text-slate-600 mb-1">Total Executions</p>
+                      <p className="text-3xl font-bold text-slate-900">
                         {formatNumber(profile.executions)}
-                      </span>
+                      </p>
                     </div>
+                    
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-slate-600 dark:text-slate-400">Success Rate</span>
-                        <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                        <span className="text-sm font-medium text-slate-600">Success Rate</span>
+                        <span className="text-sm font-bold text-green-600">
                           {profile.successRate.toFixed(1)}%
                         </span>
                       </div>
-                      <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
+                      <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
                         <div
-                          className="bg-gradient-to-r from-green-600 to-emerald-600 h-2 rounded-full transition-all duration-300"
+                          className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full transition-all duration-500"
                           style={{ width: `${profile.successRate}%` }}
                         />
                       </div>
@@ -466,35 +468,43 @@ export default function AnalyticsPage() {
             </div>
           </TabsContent>
 
-          {/* Top Errors Tab */}
+          {/* Errors Tab */}
           <TabsContent value="errors" className="space-y-6">
-            <Card className="border-slate-200 dark:border-slate-800">
-              <CardHeader>
-                <CardTitle>Most Common Errors</CardTitle>
+            <Card className="border-slate-200 bg-white shadow-sm">
+              <CardHeader className="border-b border-slate-100">
+                <CardTitle className="text-slate-900">Most Common Errors</CardTitle>
                 <CardDescription>Frequently occurring validation failures</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 {!analytics?.topErrors || analytics.topErrors.length === 0 ? (
-                  <div className="text-center py-8 text-slate-500 dark:text-slate-400">
-                    <CheckCircle2 className="h-12 w-12 mx-auto mb-3 opacity-20" />
-                    <p>No errors detected</p>
+                  <div className="text-center py-12">
+                    <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle2 className="h-10 w-10 text-green-600" />
+                    </div>
+                    <p className="text-lg font-semibold text-slate-900 mb-2">No Errors Detected</p>
+                    <p className="text-slate-600">All guardrails are performing perfectly!</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {analytics.topErrors.map((error, idx) => (
                       <div
                         key={idx}
-                        className="flex items-start justify-between p-4 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800"
+                        className="bg-red-50 border border-red-200 rounded-xl p-5 hover:bg-red-100 transition-colors"
                       >
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <Badge variant="destructive">{error.count} occurrences</Badge>
-                            <span className="text-xs text-slate-600 dark:text-slate-400">
-                              Last: {new Date(error.lastOccurred).toLocaleString()}
-                            </span>
+                        <div className="flex items-start justify-between gap-4 mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="bg-red-100 p-2 rounded-lg">
+                              <AlertTriangle className="h-5 w-5 text-red-600" />
+                            </div>
+                            <Badge variant="destructive" className="bg-red-600">
+                              {error.count} occurrences
+                            </Badge>
                           </div>
-                          <p className="text-sm text-slate-900 dark:text-white">{error.message}</p>
+                          <span className="text-xs text-slate-600">
+                            Last: {new Date(error.lastOccurred).toLocaleString()}
+                          </span>
                         </div>
+                        <p className="text-sm text-slate-900 font-medium">{error.message}</p>
                       </div>
                     ))}
                   </div>
