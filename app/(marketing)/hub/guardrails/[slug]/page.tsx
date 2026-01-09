@@ -3,7 +3,7 @@ import { ArrowLeft, Eye, Heart, Share2, Tag, Shield, Clock, TrendingUp } from 'l
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { HubIcon } from '@/app/hub/icon-map';
+import { HubIcon } from '../../icon-map';
 
 export default function GuardrailPage({ params }: { params: { slug: string } }) {
   const guardrail = GUARDRAILS.find(g => g.slug === params.slug);

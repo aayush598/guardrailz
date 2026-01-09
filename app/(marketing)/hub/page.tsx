@@ -102,7 +102,7 @@ export default function HubPage() {
                       {selectedTags.map(tag => (
                         <Badge
                           key={tag}
-                          className="bg-slate-900 text-white hover:bg-slate-800 cursor-pointer"
+                          className="bg-slate-600 text-white hover:bg-slate-800 cursor-pointer"
                           onClick={() => toggleTag(tag)}
                         >
                           #{tag}
@@ -125,7 +125,7 @@ export default function HubPage() {
                           w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium
                           transition-all duration-200
                           ${selectedTags.includes(tag)
-                            ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20'
+                            ? 'bg-slate-600 text-white shadow-lg shadow-slate-900/20'
                             : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
                           }
                         `}
@@ -138,22 +138,22 @@ export default function HubPage() {
               </div>
 
               {/* Stats Card */}
-              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl p-6 text-white">
+              <div className="bg-gradient-to-br from-slate-200 to-slate-100 rounded-xl p-6 text-slate-700">
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
                   <Grid3x3 className="h-5 w-5" />
                   Hub Stats
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-300">Total Items</span>
+                    <span className="text-sm text-slate-700">Total Items</span>
                     <span className="text-lg font-bold">{items.length}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-300">Guardrails</span>
+                    <span className="text-sm text-slate-700">Guardrails</span>
                     <span className="text-lg font-bold">{GUARDRAILS.length}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-300">Profiles</span>
+                    <span className="text-sm text-slate-700">Profiles</span>
                     <span className="text-lg font-bold">{PROFILES.length}</span>
                   </div>
                 </div>

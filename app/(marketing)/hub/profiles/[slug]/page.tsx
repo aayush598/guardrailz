@@ -5,7 +5,7 @@ import { GUARDRAILS } from '@/lib/hub/guardrails';
 import { Eye, Heart, Share2, Shield, ArrowLeft, CheckCircle, Package, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { HubIcon } from '@/app/hub/icon-map';
+import { HubIcon } from '../../icon-map';
 
 export default function ProfileDetailPage({
   params,
