@@ -6,6 +6,8 @@ import { NSFWAdvancedGuardrail } from './input/nsfw.guardrail';
 import { PHIAwarenessGuardrail } from './input/phi-awareness.guardrail';
 import { UrlFileBlockerGuardrail } from './input/url-file-blocker.guardrail';
 import { BinaryAttachmentGuardrail } from './input/binary-attachment.guardrail';
+import { EncodingObfuscationGuardrail } from './input/encoding-obfuscation.guardrail';
+
 
 import { OutputPIIRedactionGuardrail } from './output/pii-redaction.guardrail';
 import { ToolAccessControlGuardrail } from './tool/tool-access.guardrail';
@@ -17,6 +19,7 @@ guardrailRegistry.register('NSFWAdvanced', c => new NSFWAdvancedGuardrail(c));
 guardrailRegistry.register('PHIAwareness', c => new PHIAwarenessGuardrail(c));
 guardrailRegistry.register('UrlFileBlocker', c => new UrlFileBlockerGuardrail(c));
 guardrailRegistry.register('BinaryAttachment', c => new BinaryAttachmentGuardrail(c));
+guardrailRegistry.register('EncodingObfuscation', c => new EncodingObfuscationGuardrail(c));
 
 // Output
 guardrailRegistry.register('OutputPIIRedaction', c => new OutputPIIRedactionGuardrail(c));
