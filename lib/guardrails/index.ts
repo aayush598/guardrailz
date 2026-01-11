@@ -12,6 +12,7 @@ import { LanguageRestrictionGuardrail } from './input/language-restriction.guard
 import { PromptInjectionSignatureGuardrail } from './input/prompt-injection.guardrail';
 import { SystemPromptLeakGuardrail } from './input/system-prompt-leak.guardrail';
 import { CrossContextManipulationGuardrail } from './input/cross-context-manipulation.guardrail';
+import { JailbreakPatternGuardrail } from './input/jailbreak-pattern.guardrail';
 
 import { OutputPIIRedactionGuardrail } from './output/pii-redaction.guardrail';
 import { ToolAccessControlGuardrail } from './tool/tool-access.guardrail';
@@ -35,6 +36,7 @@ guardrailRegistry.register(
   'CrossContextManipulation',
   (c) => new CrossContextManipulationGuardrail(c),
 );
+guardrailRegistry.register('JailbreakPattern', (c) => new JailbreakPatternGuardrail(c));
 
 // Output
 guardrailRegistry.register('OutputPIIRedaction', (c) => new OutputPIIRedactionGuardrail(c));
