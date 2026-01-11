@@ -10,6 +10,7 @@ import { EncodingObfuscationGuardrail } from './input/encoding-obfuscation.guard
 import { DangerousPatternsGuardrail } from './input/dangerous-patterns.guardrail';
 import { LanguageRestrictionGuardrail } from './input/language-restriction.guardrail';
 import { PromptInjectionSignatureGuardrail } from './input/prompt-injection.guardrail';
+import { SystemPromptLeakGuardrail } from './input/system-prompt-leak.guardrail';
 
 import { OutputPIIRedactionGuardrail } from './output/pii-redaction.guardrail';
 import { ToolAccessControlGuardrail } from './tool/tool-access.guardrail';
@@ -28,6 +29,7 @@ guardrailRegistry.register(
   'PromptInjectionSignature',
   (c) => new PromptInjectionSignatureGuardrail(c),
 );
+guardrailRegistry.register('SystemPromptLeak', (c) => new SystemPromptLeakGuardrail(c));
 
 // Output
 guardrailRegistry.register('OutputPIIRedaction', (c) => new OutputPIIRedactionGuardrail(c));
