@@ -4,3 +4,4 @@ export * from './api-keys';
 export * from './guardrail-executions';
 export * from './rate-limits';
 export * from './relations';
+export * from './analytics-events';
