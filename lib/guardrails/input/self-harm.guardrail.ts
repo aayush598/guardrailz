@@ -66,7 +66,11 @@ export class SelfHarmGuardrail extends BaseGuardrail<SelfHarmGuardrailConfig> {
         action: 'WARN',
         severity: 'warning',
         message: 'Self-harm related references detected',
-        metadata: signal,
+        metadata: {
+          severity: signal.severity,
+          confidence: signal.confidence,
+          matched: signal.matched.slice(0, 5),
+        },
       });
     }
 

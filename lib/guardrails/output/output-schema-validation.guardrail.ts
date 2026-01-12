@@ -76,6 +76,9 @@ export class OutputSchemaValidationGuardrail extends BaseGuardrail<OutputSchemaV
       return this.fail('Output is not valid JSON', [
         {
           keyword: 'json',
+          instancePath: '',
+          schemaPath: '#/type',
+          params: {},
           message: 'Invalid JSON',
         },
       ]);
