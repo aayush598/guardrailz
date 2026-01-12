@@ -47,6 +47,7 @@ import { DestructiveToolCallGuardrail } from './tool/destructive-tool-call.guard
 import { CommandInjectionOutputGuardrail } from './output/command-injection.guardrail';
 import { RateLimitGuardrail } from './operational/rate-limit.guardrail';
 import { GDPRDataMinimizationGuardrail } from './input/gdpr-data-minimization.guardrail';
+import { DefamationGuardrail } from './content/defamation.guardrail';
 
 // Input
 guardrailRegistry.register('InputSize', (c) => new InputSizeGuardrail(c));
@@ -115,3 +116,4 @@ guardrailRegistry.register(
     }),
 );
 guardrailRegistry.register('GDPRDataMinimization', (c) => new GDPRDataMinimizationGuardrail(c));
+guardrailRegistry.register('Defamation', (c) => new DefamationGuardrail(c));
