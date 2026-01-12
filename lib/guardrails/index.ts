@@ -50,6 +50,7 @@ import { GDPRDataMinimizationGuardrail } from './input/gdpr-data-minimization.gu
 import { DefamationGuardrail } from './content/defamation.guardrail';
 import { MedicalAdviceGuardrail } from './content/medical-advice.guardrail';
 import { PoliticalPersuasionGuardrail } from './input/political-persuasion.guardrail';
+import { ViolenceGuardrail } from './content/violence.guardrail';
 
 // Input
 guardrailRegistry.register('InputSize', (c) => new InputSizeGuardrail(c));
@@ -121,3 +122,4 @@ guardrailRegistry.register('GDPRDataMinimization', (c) => new GDPRDataMinimizati
 guardrailRegistry.register('Defamation', (c) => new DefamationGuardrail(c));
 guardrailRegistry.register('MedicalAdvice', (c) => new MedicalAdviceGuardrail(c));
 guardrailRegistry.register('PoliticalPersuasion', (c) => new PoliticalPersuasionGuardrail(c));
+guardrailRegistry.register('Violence', (c) => new ViolenceGuardrail(c));
