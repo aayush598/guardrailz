@@ -4,7 +4,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
 import { PanelLeft } from 'lucide-react';
 
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useMediaQuery } from '@/shared/hooks';
 import { cn } from '@/lib/utils';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -44,7 +44,7 @@ const SidebarProvider = React.forwardRef(
     },
     ref,
   ) => {
-    const isMobile = useIsMobile();
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const [openMobile, setOpenMobile] = React.useState(false);
 
     // This is the internal state of the sidebar.
