@@ -53,6 +53,7 @@ import { PoliticalPersuasionGuardrail } from './input/political-persuasion.guard
 import { ViolenceGuardrail } from './content/violence.guardrail';
 import { SelfHarmGuardrail } from './input/self-harm.guardrail';
 import { HateSpeechGuardrail } from './input/hate-speech.guardrail';
+import { LLMClassifierInjectionGuardrail } from './input/llm-classifier-injection.guardrail';
 
 // Input
 guardrailRegistry.register('InputSize', (c) => new InputSizeGuardrail(c));
@@ -127,3 +128,4 @@ guardrailRegistry.register('PoliticalPersuasion', (c) => new PoliticalPersuasion
 guardrailRegistry.register('Violence', (c) => new ViolenceGuardrail(c));
 guardrailRegistry.register('SelfHarm', (c) => new SelfHarmGuardrail(c));
 guardrailRegistry.register('HateSpeech', (c) => new HateSpeechGuardrail(c));
+guardrailRegistry.register('LLMClassifierInjection', (c) => new LLMClassifierInjectionGuardrail(c));
