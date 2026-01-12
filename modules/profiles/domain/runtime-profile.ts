@@ -4,8 +4,8 @@ export interface RuntimeProfile {
   id: string;
   name: string;
 
-  // precomputed
   input: GuardrailDescriptor[];
   output: GuardrailDescriptor[];
-  both: GuardrailDescriptor[];
+  tool: GuardrailDescriptor[];
+  all: GuardrailDescriptor[];
 }

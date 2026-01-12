@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import { db } from '@/shared/db/client';
 import { users, profiles } from '@/shared/db/schema';
-import { eq, and, desc } from 'drizzle-orm';
-import { BUILTIN_PROFILES } from '@/lib/profiles/built-in';
+import { eq } from 'drizzle-orm';
+import { ProfileService } from '@/modules/profiles/service/profile.service';
 
 // Helper to get or create user
 async function getOrCreateUser(clerkUser: any) {
@@ -26,51 +26,19 @@ async function getOrCreateUser(clerkUser: any) {
   return newUser;
 }
 
-// Initialize built-in profiles for a user
-async function initializeBuiltInProfiles(userId: string) {
-  const existingProfiles = await db
-    .select()
-    .from(profiles)
-    .where(and(eq(profiles.isBuiltIn, true), eq(profiles.userId, userId)));
-
-  if (existingProfiles.length === 0) {
-    const builtInProfilesData = Object.values(BUILTIN_PROFILES).map((profile) => ({
-      userId,
-      name: profile.name,
-      description: profile.description,
-      isBuiltIn: true,
-      inputGuardrails: profile.inputGuardrails,
-      outputGuardrails: profile.outputGuardrails,
-      toolGuardrails: profile.toolGuardrails,
-    }));
-
-    await db.insert(profiles).values(builtInProfilesData);
-  }
-}
-
 export async function GET() {
-  try {
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const dbUser = await getOrCreateUser(user);
-    await initializeBuiltInProfiles(dbUser.id);
-
-    const allProfiles = await db
-      .select()
-      .from(profiles)
-      .where(eq(profiles.userId, dbUser.id))
-      .orderBy(desc(profiles.createdAt));
-
-    return NextResponse.json({ profiles: allProfiles });
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: 'Failed to fetch profiles', details: error.message },
-      { status: 500 },
-    );
+  const clerkUser = await currentUser();
+  if (!clerkUser) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const user = await getOrCreateUser(clerkUser);
+  const service = new ProfileService();
+
+  await service.ensureBuiltIns(user.id);
+
+  const profiles = await service.getRuntimeProfiles(user.id);
+  return NextResponse.json({ profiles });
 }
 
 export async function POST(request: NextRequest) {
