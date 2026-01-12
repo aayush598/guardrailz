@@ -40,6 +40,7 @@ import { RetentionCheckGuardrail } from './general/retention-check.guardrail';
 import { IAMPermissionGuardrail } from './tool/iam-permission.guardrail';
 
 import { ApiKeyRotationTriggerGuardrail } from './security/api-key-rotation.guardrail';
+import { SecretsInLogsGuardrail } from './output/secrets-in-logs.guardrail';
 
 // Input
 guardrailRegistry.register('InputSize', (c) => new InputSizeGuardrail(c));
@@ -92,3 +93,5 @@ guardrailRegistry.register('RetentionCheck', (c) => new RetentionCheckGuardrail(
 guardrailRegistry.register('IAMPermission', (c) => new IAMPermissionGuardrail(c));
 
 guardrailRegistry.register('ApiKeyRotationTrigger', (c) => new ApiKeyRotationTriggerGuardrail(c));
+
+guardrailRegistry.register('SecretsInLogs', (c) => new SecretsInLogsGuardrail(c));
