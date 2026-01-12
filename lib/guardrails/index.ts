@@ -43,6 +43,7 @@ import { ApiKeyRotationTriggerGuardrail } from './security/api-key-rotation.guar
 import { SecretsInLogsGuardrail } from './output/secrets-in-logs.guardrail';
 import { FileWriteRestrictionGuardrail } from './tool/file-write-restriction.guardrail';
 import { ApiRateLimitGuardrail } from './tool/api-rate-limit.guardrail';
+import { DestructiveToolCallGuardrail } from './tool/destructive-tool-call.guardrail';
 
 // Input
 guardrailRegistry.register('InputSize', (c) => new InputSizeGuardrail(c));
@@ -99,3 +100,4 @@ guardrailRegistry.register('ApiKeyRotationTrigger', (c) => new ApiKeyRotationTri
 guardrailRegistry.register('SecretsInLogs', (c) => new SecretsInLogsGuardrail(c));
 guardrailRegistry.register('FileWriteRestriction', (c) => new FileWriteRestrictionGuardrail(c));
 guardrailRegistry.register('ApiRateLimit', (c) => new ApiRateLimitGuardrail(c));
+guardrailRegistry.register('DestructiveToolCall', (c) => new DestructiveToolCallGuardrail(c));
