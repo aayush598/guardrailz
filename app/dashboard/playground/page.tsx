@@ -1,6 +1,6 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { db } from '@/lib/db';
-import { profiles, apiKeys } from '@/lib/db/schema';
+import { db } from '@/shared/db/client';
+import { profiles, apiKeys } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import PlaygroundClient from './PlaygroundClient';
 

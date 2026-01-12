@@ -1,7 +1,7 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { notFound } from 'next/navigation';
-import { db } from '@/lib/db';
-import { rateLimitTracking, guardrailExecutions } from '@/lib/db/schema';
+import { db } from '@/shared/db/client';
+import { rateLimitTracking, guardrailExecutions } from '@/shared/db/schema';
 import { and, eq, gte, sql } from 'drizzle-orm';
 import ApiKeyAnalyticsClient from './ApiKeyAnalyticsClient';
 

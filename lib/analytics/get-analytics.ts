@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db } from '@/shared/db/client';
 
 /* Replace with real queries */
 export async function getAnalytics(userId: string, range: string) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
-import { db } from '@/lib/db';
-import { users, apiKeys } from '@/lib/db/schema';
+import { db } from '@/shared/db/client';
+import { users, apiKeys } from '@/shared/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 // Helper to get or create user

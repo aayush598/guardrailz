@@ -1,6 +1,6 @@
-import { db } from './db';
-import { rateLimitTracking, apiKeys, userRateLimits, users } from './db/schema';
-import { eq, and, gte } from 'drizzle-orm';
+import { db } from '@/shared/db/client';
+import { rateLimitTracking, apiKeys, userRateLimits } from '@/shared/db/schema';
+import { eq, and } from 'drizzle-orm';
 
 export interface RateLimitResult {
   allowed: boolean;

@@ -2,8 +2,8 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
-import { db } from '@/lib/db';
-import { users, rateLimitTracking, guardrailExecutions } from '@/lib/db/schema';
+import { db } from '@/shared/db/client';
+import { users, rateLimitTracking, guardrailExecutions } from '@/shared/db/schema';
 import { eq, and, gte, sql } from 'drizzle-orm';
 
 /* ---------------- helper ---------------- */

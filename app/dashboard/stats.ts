@@ -1,8 +1,8 @@
 // app/dashboard/stats.ts
 import { currentUser } from '@clerk/nextjs/server';
 import { unstable_cache } from 'next/cache';
-import { db } from '@/lib/db';
-import { guardrailExecutions, apiKeys, profiles } from '@/lib/db/schema';
+import { db } from '@/shared/db/client';
+import { guardrailExecutions, apiKeys, profiles } from '@/shared/db/schema';
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
 
 /* ---------------- PUBLIC ENTRY ---------------- */

@@ -1,6 +1,6 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { db } from '@/lib/db';
-import { profiles } from '@/lib/db/schema';
+import { db } from '@/shared/db/client';
+import { profiles } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import ProfilesClient from './ProfilesClient';
 

@@ -1,8 +1,8 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { apiKeys, profiles, guardrailExecutions } from '@/lib/db/schema';
+import { db } from '@/shared/db/client';
+import { apiKeys, profiles, guardrailExecutions } from '@/shared/db/schema';
 import { and, eq } from 'drizzle-orm';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { runGuardrails } from '@/lib/guardrails/service';

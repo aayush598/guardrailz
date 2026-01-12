@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
-import { db } from '@/lib/db';
-import { users, profiles } from '@/lib/db/schema';
+import { db } from '@/shared/db/client';
+import { users, profiles } from '@/shared/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { BUILTIN_PROFILES } from '@/lib/profiles/built-in';
 

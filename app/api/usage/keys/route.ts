@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
-import { db } from '@/lib/db';
-import { users, rateLimitTracking } from '@/lib/db/schema';
+import { db } from '@/shared/db/client';
+import { users, rateLimitTracking } from '@/shared/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 async function getOrCreateUser(clerkUser: any) {

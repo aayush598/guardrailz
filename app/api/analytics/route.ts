@@ -2,9 +2,9 @@ export const dynamic = 'force-dynamic';
 
 import { currentUser } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { guardrailExecutions, profiles } from '@/lib/db/schema';
-import { eq, and, gte, sql, desc } from 'drizzle-orm';
+import { db } from '@/shared/db/client';
+import { guardrailExecutions, profiles } from '@/shared/db/schema';
+import { eq, and, gte, sql } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
   try {
