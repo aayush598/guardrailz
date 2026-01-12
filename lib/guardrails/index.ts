@@ -36,6 +36,8 @@ import { CostThresholdGuardrail } from './operational/cost-threshold.guardrail';
 
 import { RetentionCheckGuardrail } from './general/retention-check.guardrail';
 
+import { IAMPermissionGuardrail } from './tool/iam-permission.guardrail';
+
 // Input
 guardrailRegistry.register('InputSize', (c) => new InputSizeGuardrail(c));
 guardrailRegistry.register('SecretsInInput', (c) => new SecretsInInputGuardrail(c));
@@ -81,3 +83,6 @@ guardrailRegistry.register('CostThreshold', (c) => new CostThresholdGuardrail(c)
 
 // General
 guardrailRegistry.register('RetentionCheck', (c) => new RetentionCheckGuardrail(c));
+
+// Tool
+guardrailRegistry.register('IAMPermission', (c) => new IAMPermissionGuardrail(c));
