@@ -23,6 +23,7 @@ import { InternalDataLeakGuardrail } from './output/internal-data-leak.guardrail
 import { HallucinationRiskGuardrail } from './output/hallucination-risk.guardrail';
 import { ConfidentialityGuardrail } from './output/confidentiality.guardrail';
 import { OutputSchemaValidationGuardrail } from './output/output-schema-validation.guardrail';
+import { CitationRequiredGuardrail } from './output/citation-required.guardrail';
 
 // Input
 guardrailRegistry.register('InputSize', (c) => new InputSizeGuardrail(c));
@@ -55,3 +56,5 @@ guardrailRegistry.register('InternalDataLeak', (c) => new InternalDataLeakGuardr
 guardrailRegistry.register('HallucinationRisk', (c) => new HallucinationRiskGuardrail(c));
 guardrailRegistry.register('Confidentiality', (c) => new ConfidentialityGuardrail(c));
 guardrailRegistry.register('OutputSchemaValidation', (c) => new OutputSchemaValidationGuardrail(c));
+
+guardrailRegistry.register('CitationRequired', (c) => new CitationRequiredGuardrail(c));
