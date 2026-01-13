@@ -22,7 +22,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@aayushgid/guardrailz-sdk": "file:sdk/aayushgid-guardrailz-sdk-0.1.0.tgz",
     "@clerk/nextjs": "^6.36.2",
     "@hookform/resolvers": "^5.1.1",
     "@radix-ui/react-accordion": "^1.2.11",
