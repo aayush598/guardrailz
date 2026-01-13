@@ -80,8 +80,11 @@ export async function POST(req: NextRequest) {
       executionTimeMs: result.executionTimeMs,
       rateLimits: rate.limits,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
-    return NextResponse.json({ error: 'Validation failed', details: err.message }, { status: 500 });
+
+    const message = err instanceof Error ? err.message : 'Unknown validation error';
+
+    return NextResponse.json({ error: 'Validation failed', details: message }, { status: 500 });
   }
 }

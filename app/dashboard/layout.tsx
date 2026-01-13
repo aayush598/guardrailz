@@ -16,6 +16,7 @@ import {
 import { Button } from '@/shared/ui/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import type { LucideIcon } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -28,7 +29,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return pathname.startsWith(href);
   };
 
-  const NavLink = ({ href, icon: Icon, label }: { href: string; icon: any; label: string }) => {
+  const NavLink = ({
+    href,
+    icon: Icon,
+    label,
+  }: {
+    href: string;
+    icon: LucideIcon;
+    label: string;
+  }) => {
     const active = isActiveRoute(href);
 
     return (

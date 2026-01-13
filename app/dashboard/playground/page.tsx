@@ -7,7 +7,7 @@ import PlaygroundClient from './PlaygroundClient';
 export default async function PlaygroundPage() {
   const { dbUser } = await requireAuth();
 
-  const [profilesData, apiKeysData] = await Promise.all([
+  const [rawProfiles, apiKeysData] = await Promise.all([
     db
       .select({
         id: profiles.id,
@@ -27,6 +27,11 @@ export default async function PlaygroundPage() {
       .from(apiKeys)
       .where(eq(apiKeys.userId, dbUser.id)),
   ]);
+
+  const profilesData = rawProfiles.map((p) => ({
+    ...p,
+    description: p.description ?? '',
+  }));
 
   return <PlaygroundClient profiles={profilesData} apiKeys={apiKeysData} />;
 }

@@ -1,5 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
 import {
   GuardrailAction,
   GuardrailSeverity,
@@ -37,7 +36,7 @@ export class LLMClassifierInjectionGuardrail extends BaseGuardrail<LLMClassifier
     });
   }
 
-  execute(text: string, _context: GuardrailContext): GuardrailResult {
+  execute(text: string): GuardrailResult {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

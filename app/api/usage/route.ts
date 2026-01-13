@@ -30,11 +30,11 @@ export async function GET() {
       passedExecutions: passed,
       failedExecutions: guardrailEvents.length - passed,
     });
-  } catch (err: any) {
-    console.error('Usage error:', err);
-    return NextResponse.json(
-      { error: 'Failed to fetch usage', details: err.message },
-      { status: 500 },
-    );
+  } catch (err: unknown) {
+    console.error(err);
+
+    const message = err instanceof Error ? err.message : 'Unknown Usage error';
+
+    return NextResponse.json({ error: 'Failed to fetch usage', details: message }, { status: 500 });
   }
 }

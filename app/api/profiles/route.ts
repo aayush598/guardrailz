@@ -38,9 +38,13 @@ export async function POST(request: NextRequest) {
       .returning();
 
     return NextResponse.json({ profile: newProfile });
-  } catch (error: any) {
+  } catch (err: unknown) {
+    console.error(err);
+
+    const message = err instanceof Error ? err.message : 'Unknown profiles error';
+
     return NextResponse.json(
-      { error: 'Failed to create profile', details: error.message },
+      { error: 'Failed to create profile', details: message },
       { status: 500 },
     );
   }

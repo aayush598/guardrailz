@@ -1,6 +1,14 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
+import { GuardrailAction } from '@/modules/guardrails/engine/types';
+
+type ResolvedLanguageRestrictionConfig = {
+  allowedScripts: Array<
+    'latin' | 'cyrillic' | 'arabic' | 'devanagari' | 'han' | 'hiragana' | 'katakana' | 'hangul'
+  >;
+  minAllowedRatio: number;
+  maxDisallowedChars: number;
+  warnOnly: boolean;
+};
 
 /* ============================================================================
  * Config
@@ -46,7 +54,7 @@ const SCRIPT_REGEX: Record<string, RegExp> = {
 /* ============================================================================
  * Guardrail
  * ========================================================================== */
-export class LanguageRestrictionGuardrail extends BaseGuardrail<LanguageRestrictionConfig> {
+export class LanguageRestrictionGuardrail extends BaseGuardrail<ResolvedLanguageRestrictionConfig> {
   constructor(config: LanguageRestrictionConfig = {}) {
     super('LanguageRestriction', 'input', {
       allowedScripts: config.allowedScripts ?? ['latin'],
@@ -56,7 +64,7 @@ export class LanguageRestrictionGuardrail extends BaseGuardrail<LanguageRestrict
     });
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

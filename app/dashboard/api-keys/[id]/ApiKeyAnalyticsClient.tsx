@@ -19,7 +19,31 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 
-export default function ApiKeyAnalyticsClient({ data }: { data: any }) {
+interface TimeSeriesPoint {
+  time: Date | string;
+  count: number;
+}
+
+interface SuccessFailurePoint {
+  passed: boolean;
+  count: number;
+}
+
+interface LatencyStats {
+  p50: number;
+  p95: number;
+  p99: number;
+}
+
+interface ApiKeyAnalyticsData {
+  perMinute: TimeSeriesPoint[];
+  perHour: TimeSeriesPoint[];
+  perDay: TimeSeriesPoint[];
+  successFailure: SuccessFailurePoint[];
+  latency: LatencyStats;
+}
+
+export default function ApiKeyAnalyticsClient({ data }: { data: ApiKeyAnalyticsData }) {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="container mx-auto px-4 py-8 sm:px-6">
@@ -77,7 +101,7 @@ export default function ApiKeyAnalyticsClient({ data }: { data: any }) {
         <Section title="Reliability" icon={<Activity className="h-5 w-5" />}>
           <Chart title="Success vs Failure (24h)">
             <BarChart
-              data={data.successFailure.map((x: any) => ({
+              data={data.successFailure.map((x) => ({
                 name: x.passed ? 'Success' : 'Failure',
                 value: x.count,
                 passed: x.passed,
@@ -87,7 +111,7 @@ export default function ApiKeyAnalyticsClient({ data }: { data: any }) {
               <YAxis />
               <Tooltip />
               <Bar dataKey="value">
-                {data.successFailure.map((e: any, i: number) => (
+                {data.successFailure.map((e, i) => (
                   <Cell key={i} fill={e.passed ? '#10b981' : '#ef4444'} />
                 ))}
               </Bar>
@@ -110,7 +134,15 @@ export default function ApiKeyAnalyticsClient({ data }: { data: any }) {
 
 /* ---------- UI HELPERS ---------- */
 
-function Section({ title, icon, children }: any) {
+function Section({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <section className="mb-10">
       <div className="mb-6 flex items-center gap-3">
@@ -122,7 +154,15 @@ function Section({ title, icon, children }: any) {
   );
 }
 
-function Chart({ title, description, children }: any) {
+function Chart({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description?: string;
+  children: React.ReactElement;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -138,7 +178,7 @@ function Chart({ title, description, children }: any) {
   );
 }
 
-function Metric({ label, value }: any) {
+function Metric({ label, value }: { label: string; value: string | number }) {
   return (
     <Card>
       <CardContent className="pt-6 text-center">

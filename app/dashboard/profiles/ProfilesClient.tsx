@@ -5,17 +5,20 @@ import { ShieldCheck, Lock, Zap, FileCode } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 
+import type { GuardrailDescriptor } from '@/modules/guardrails/descriptors/types';
+import type { LucideIcon } from 'lucide-react';
+
 interface Profile {
   id: string;
   name: string;
   description: string;
   isBuiltIn: boolean;
-  inputGuardrails: any[];
-  outputGuardrails: any[];
-  toolGuardrails: any[];
+  inputGuardrails: GuardrailDescriptor[];
+  outputGuardrails: GuardrailDescriptor[];
+  toolGuardrails: GuardrailDescriptor[];
 }
 
-const PROFILE_ICON_MAP: Record<string, any> = {
+const PROFILE_ICON_MAP: Record<string, LucideIcon> = {
   default: ShieldCheck,
   enterprise: Lock,
   healthcare: ShieldCheck,
