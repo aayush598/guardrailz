@@ -7,7 +7,8 @@
     "dev": "NODE_OPTIONS='--max-old-space-size=512' next dev --hostname 0.0.0.0 --port 3000",
     "dev:no-reload": "next dev --hostname 0.0.0.0 --port 3000",
     "dev:webpack": "next dev --hostname 0.0.0.0 --port 3000",
-    "build": "next build",
+    "build:docs": "tsx app/docs/_search/build-index.ts",
+    "build": "npm run build:docs && next build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
@@ -103,6 +104,7 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16"
   },
