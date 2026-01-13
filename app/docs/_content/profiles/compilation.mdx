@@ -1,0 +1,104 @@
+
+# Profile Compilation
+
+Profile compilation is the process of turning a **declarative profile definition** into an **executable runtime profile**.
+
+This step ensures guardrails are:
+
+- Valid
+- Ordered correctly
+- Ready for execution
+
+
+
+## Why compilation exists
+
+Profiles are stored as configuration data.  
+Guardrails must convert this data into executable objects.
+
+Compilation provides:
+
+- Validation
+- Normalization
+- Dependency resolution
+- Performance optimizations
+
+
+
+## Compilation steps
+
+1. **Descriptor validation**
+   - Ensures guardrail names are valid
+   - Verifies configuration schemas
+
+2. **Normalization**
+   - Applies defaults
+   - Resolves aliases
+   - Normalizes phases (input/output/tool)
+
+3. **Instantiation**
+   - Creates guardrail instances
+   - Injects configuration and context
+
+4. **Ordering**
+   - Ensures correct execution order
+   - Groups by execution phase
+
+
+
+## Runtime profile
+
+The result of compilation is a **runtime profile**, which contains:
+
+- Executable guardrail instances
+- Pre-computed execution phases
+- Optimized structures for fast execution
+
+Runtime profiles are immutable and safe to reuse.
+
+
+
+## Performance considerations
+
+Compilation is:
+
+- Lightweight
+- Cached when possible
+- Designed for high-throughput systems
+
+Execution performance is not impacted by profile complexity.
+
+
+
+## Error handling
+
+If compilation fails:
+
+- The request is rejected
+- A structured error is returned
+- The failure is recorded in analytics
+
+This prevents unsafe or misconfigured policies from running.
+
+
+
+## Summary
+
+Profile compilation ensures that:
+
+- Policies are safe
+- Execution is predictable
+- Runtime overhead is minimal
+
+It is a core part of Guardrails’ production architecture.
+````
+
+
+
+## What you now have
+
+✔ Clean, professional docs
+✔ Aligned with your actual codebase
+✔ Scalable docs hierarchy
+✔ Zero React coupling
+✔ Ready for sidebar + search + versioning

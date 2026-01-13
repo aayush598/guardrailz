@@ -1,0 +1,70 @@
+
+# Output Guardrails
+
+Output guardrails run **after the model generates a response**.
+
+They ensure that generated content is safe, compliant, and aligned with policy.
+
+
+
+## What output guardrails protect against
+
+- PII or PHI leakage
+- Hallucinated facts
+- Unsafe instructions
+- Confidential data exposure
+- Policy-violating content
+- Unstructured or invalid output
+
+
+
+## Common output guardrails
+
+- **PII Redaction**  
+  Removes sensitive personal data.
+
+- **Schema Validation**  
+  Ensures output matches a required format.
+
+- **Citation Requirement**  
+  Requires sources for factual claims.
+
+- **Confidentiality Enforcement**  
+  Prevents internal data exposure.
+
+
+
+## Enforcement actions
+
+Output guardrails can:
+
+- Block responses
+- Modify content (redact, sanitize)
+- Attach warnings
+- Downgrade confidence
+- Emit audit events
+
+
+
+## Example flow
+
+1. Model generates output
+2. Output guardrails execute
+3. Violations are detected
+4. Output is redacted or blocked
+5. Final response is returned
+
+
+
+## Best practices
+
+- Use **PII redaction** by default
+- Require schemas for agent outputs
+- Enforce citations in regulated domains
+
+
+
+## Next steps
+
+- Learn about **Tool Guardrails**
+- Learn how to write **Custom Guardrails**

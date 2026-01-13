@@ -7,5 +7,5 @@ export default async function DocsSlugPage({ params }: { params: { slug: string[
 
   if (!content) notFound();
 
-  return <article className="prose prose-neutral max-w-none">{content}</article>;
+  return <article className="prose prose-neutral max-w-none dark:prose-invert">{content}</article>;
 }

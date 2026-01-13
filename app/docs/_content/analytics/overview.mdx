@@ -1,0 +1,66 @@
+# Analytics Overview
+
+Analytics in Guardrails provides **deep visibility** into how your AI systems behave in production.
+
+It enables you to **measure safety**, **detect risk**, **optimize performance**, and **prove compliance** across all guardrail executions.
+
+
+
+## Why analytics matters
+
+Without analytics, AI safety systems become opaque and unverifiable.
+
+Guardrails analytics allows you to:
+
+- Track every guardrail execution
+- Measure pass/fail rates over time
+- Identify risky prompts and failure patterns
+- Monitor latency and performance impact
+- Audit usage for compliance and governance
+
+
+
+## What is tracked
+
+Each guardrail execution emits structured analytics events, including:
+
+- Execution outcome (pass / fail)
+- Execution latency
+- Guardrail-level results
+- Profile used
+- API key and user context
+- Timestamp and environment metadata
+
+These events form the foundation for dashboards, alerts, and audits.
+
+
+
+## Analytics architecture (high-level)
+
+Guardrails analytics follows an **event-driven model**:
+
+1. Runtime execution emits analytics events
+2. Events are ingested into the analytics pipeline
+3. Queries aggregate events into metrics
+4. Dashboards visualize trends and anomalies
+
+This design ensures analytics is **decoupled**, **scalable**, and **non-blocking**.
+
+
+
+## Who should use analytics
+
+Analytics is designed for:
+
+- Engineering teams monitoring production AI
+- Security teams auditing safety controls
+- Compliance teams validating policy enforcement
+- Product teams optimizing user experience
+
+
+
+## Next steps
+
+- Learn how events are structured → **Events**
+- Understand analytics queries → **Queries**
+- Explore dashboards and metrics → **Dashboards**

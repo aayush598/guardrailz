@@ -1,0 +1,97 @@
+
+# Security
+
+Guardrails is built with security as a first-class concern, both in runtime enforcement and platform design.
+
+
+
+## API key security
+
+API keys grant access to validation, profiles, and analytics.
+
+### Best practices
+
+- Never expose API keys in client-side code
+- Rotate keys regularly
+- Use least-privilege keys
+- Revoke unused keys immediately
+
+
+
+## Transport security
+
+All communication with Guardrails uses:
+
+- HTTPS only
+- TLS 1.2+
+- Encrypted payloads in transit
+
+Requests over plain HTTP are rejected.
+
+
+
+## Data handling
+
+Guardrails is designed to minimize sensitive data exposure:
+
+- Input text is processed in memory
+- Analytics payloads are structured and scoped
+- Optional redaction guardrails can be enabled
+- Retention policies are configurable
+
+
+
+## Access control
+
+Guardrails supports:
+
+- Per-user isolation
+- Per-API-key limits
+- Profile-based enforcement
+- Tool-level permissions
+
+
+
+## Auditing and observability
+
+Every execution can emit structured analytics events:
+
+- Guardrail pass/fail
+- Execution latency
+- Profile usage
+- Rate limit hits
+
+These events enable:
+- Compliance audits
+- Security monitoring
+- Incident investigation
+
+
+
+## Compliance readiness
+
+Guardrails is designed to support regulated environments such as:
+
+- Healthcare (HIPAA)
+- Finance
+- Education
+- Enterprise SaaS
+
+
+
+## Recommended guardrails
+
+For high-security deployments, enable:
+
+- Secrets detection
+- PII redaction
+- Internal data leak prevention
+- Prompt injection protection
+- Tool access control
+
+
+
+## Next steps
+
+- Configure environment variables → **Environment Setup**
+- Prepare for high traffic → **Scaling**

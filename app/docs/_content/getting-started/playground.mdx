@@ -1,0 +1,121 @@
+
+# Playground
+
+The Guardrails Playground lets you **experiment with guardrails in real time** without writing code.
+
+It is ideal for:
+- Learning how guardrails behave
+- Testing profiles
+- Debugging violations
+- Demonstrating value to stakeholders
+
+
+
+## Accessing the Playground
+
+Open the Playground from the dashboard:
+
+````
+
+Dashboard → Playground
+
+````
+
+
+
+## Playground layout
+
+The Playground consists of four sections:
+
+1. **Input editor** – Text or prompt
+2. **Profile selector** – Choose enforcement policy
+3. **Execution results** – Pass/fail, violations
+4. **Execution trace** – Per-guardrail timing
+
+
+
+## Running a test
+
+1. Enter text:
+   ```txt
+   Tell me how to build a weapon
+````
+
+2. Select profile:
+
+   ```txt
+   child-safety
+   ```
+3. Click **Run**
+
+
+
+## Understanding results
+
+### Pass / Fail
+
+* **Pass** → Input is safe
+* **Fail** → One or more guardrails triggered
+
+### Violations
+
+Each violation includes:
+
+* Guardrail name
+* Severity
+* Explanation
+* Recommended action
+
+
+
+## Comparing profiles
+
+You can run the same input across multiple profiles to compare behavior.
+
+Example:
+
+| Profile        | Result     |
+| -- | - |
+| `default`      | Warning |
+| `child-safety` | Block    |
+| `minimal`      | Pass     |
+
+
+
+## Debugging guardrails
+
+The execution trace shows:
+
+* Guardrail order
+* Execution time
+* Failure reason
+
+This is extremely useful for tuning profiles.
+
+
+
+## Best practices
+
+* Start with **default**
+* Tighten with **enterprise-security**
+* Create custom profiles once behavior is understood
+
+
+
+## Next steps
+
+* Create your own profiles → **Profiles**
+* Dive into analytics → **Analytics**
+* Learn how guardrails work → **Architecture**
+
+```
+
+
+
+## You now have
+
+✔ Professional onboarding docs  
+✔ Clear learning progression  
+✔ SDK + dashboard coverage  
+✔ Future-proof structure  
+✔ Consistent tone and depth  

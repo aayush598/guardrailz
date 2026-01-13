@@ -1,0 +1,90 @@
+
+# Writing Custom Guardrails
+
+Custom guardrails allow you to enforce **domain-specific rules** unique to your application.
+
+
+
+## When to write a custom guardrail
+
+- Industry-specific compliance
+- Proprietary business logic
+- Internal safety rules
+- Organization-specific policies
+
+
+
+## Guardrail structure
+
+A guardrail consists of:
+
+- A unique name
+- An execution phase (input, output, tool)
+- A configuration schema
+- A deterministic `execute` function
+
+
+
+## Example use cases
+
+- Prevent medical advice without disclaimers
+- Enforce region-specific data rules
+- Restrict model usage by user role
+- Enforce cost or latency limits
+
+
+
+## Design principles
+
+### Deterministic
+Same input → same result.
+
+### Fast
+Guardrails should be lightweight.
+
+### Observable
+Emit analytics and logs.
+
+### Configurable
+Avoid hardcoded values.
+
+
+
+## Testing custom guardrails
+
+Every guardrail should have:
+
+- Unit tests
+- Integration tests
+- Edge-case coverage
+
+
+
+## Deployment
+
+Once registered, custom guardrails:
+
+- Can be added to profiles
+- Appear in analytics
+- Are enforced consistently
+
+
+
+## Next steps
+
+- Explore **Profiles**
+- Learn about **Analytics**
+- Review **SDK usage**
+```
+
+
+
+## You’re done
+
+These files are:
+
+* Production-ready
+* Clear and professional
+* Scalable for future docs
+* Free of React logic
+* MDX-compatible

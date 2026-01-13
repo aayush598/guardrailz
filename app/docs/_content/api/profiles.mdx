@@ -1,0 +1,77 @@
+# Profiles API
+
+Profiles define **guardrail policies** that control how validation is performed.
+
+They allow guardrails to be reused, versioned, and managed independently of code.
+
+
+
+## List Profiles
+
+````
+
+GET /api/profiles
+
+````
+
+Returns all profiles available to the authenticated user.
+
+### Response
+
+```json
+{
+  "profiles": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Baseline production guardrails",
+      "isBuiltIn": true
+    }
+  ]
+}
+````
+
+
+
+## Create Profile
+
+```
+POST /api/profiles
+```
+
+### Request
+
+```json
+{
+  "name": "strict-security",
+  "description": "High security profile",
+  "inputGuardrails": [
+    { "name": "SecretsInInput", "config": { "severity": "critical" } }
+  ],
+  "outputGuardrails": [],
+  "toolGuardrails": []
+}
+```
+
+
+
+## Built-in Profiles
+
+Guardrails ships with curated profiles such as:
+
+* `default`
+* `enterprise_security`
+* `child_safety`
+* `healthcare`
+* `financial`
+* `minimal`
+
+These are automatically initialized per user.
+
+
+
+## Best Practices
+
+* Use **built-in profiles** as a starting point
+* Clone and customize for application-specific needs
+* Avoid frequent profile changes in production

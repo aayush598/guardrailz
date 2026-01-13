@@ -1,0 +1,74 @@
+
+# Input Guardrails
+
+Input guardrails protect your system **before the model is invoked**.
+
+They validate, sanitize, and constrain incoming data to prevent unsafe or malicious inputs.
+
+
+
+## What input guardrails protect against
+
+- Prompt injection
+- Jailbreak attempts
+- Excessive input size
+- Secrets or credentials leakage
+- PII / PHI exposure
+- Unsafe or disallowed content
+- Encoding and obfuscation tricks
+
+
+
+## Common input guardrails
+
+Examples include:
+
+- **Input Size Guardrail**  
+  Prevents extremely large inputs.
+
+- **Secrets Detection**  
+  Blocks API keys, tokens, or credentials.
+
+- **Prompt Injection Detection**  
+  Detects attempts to override system instructions.
+
+- **NSFW / Hate / Violence Detection**  
+  Enforces content safety policies.
+
+
+
+## Execution behavior
+
+Input guardrails run in this order:
+
+1. Normalize input
+2. Execute configured guardrails
+3. Stop on block (if configured)
+4. Emit analytics events
+
+
+
+## Example behavior
+
+If a prompt contains an API key:
+
+- Execution is blocked
+- The request is logged
+- Analytics are emitted
+- A structured error is returned
+
+
+
+## Best practices
+
+- Always include **Input Size**
+- Always include **Secrets Detection**
+- Use stricter policies for public APIs
+- Use relaxed policies for internal tools
+
+
+
+## Next steps
+
+- Learn about **Output Guardrails**
+- Explore **Profiles** to bundle input guardrails

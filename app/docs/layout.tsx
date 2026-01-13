@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { DocsSidebar } from './_components/DocsSidebar';
 import { DocsBreadcrumb } from './_components/DocsBreadcrumb';
 import { docsMetadata } from './_config/metadata';
-import { MarketingNavbar } from '@/shared/ui/navbar';
 
 export const metadata = docsMetadata;
 

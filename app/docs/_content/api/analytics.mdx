@@ -1,0 +1,76 @@
+# Analytics API
+
+The Analytics API provides **visibility into guardrail execution**, performance, and failures.
+
+It enables monitoring, auditing, and optimization of AI safety systems.
+
+
+
+## Overview Metrics
+
+````
+
+GET /api/analytics?range=7d
+
+````
+
+### Response
+
+```json
+{
+  "overview": {
+    "totalExecutions": 12450,
+    "successRate": 97.4,
+    "avgExecutionTime": 38
+  }
+}
+````
+
+
+
+## Supported Ranges
+
+* `24h`
+* `7d`
+* `30d`
+* `90d`
+
+
+
+## Guardrail Performance
+
+Metrics include:
+
+* Execution count per guardrail
+* Failure rate
+* Average latency
+* Most frequent violations
+
+
+
+## Use Cases
+
+* Detect prompt injection attempts
+* Identify slow or noisy guardrails
+* Monitor compliance trends
+* Audit user behavior
+
+
+
+## Data Model
+
+Each analytics event includes:
+
+* User ID
+* API key (optional)
+* Profile ID
+* Guardrail results
+* Execution metadata
+
+
+
+## Notes
+
+* Analytics data is **append-only**
+* Designed for high-volume workloads
+* Safe for regulated environments

@@ -1,0 +1,80 @@
+# Installation
+
+This guide walks you through installing **Guardrails** in your application using either the REST API or the official SDK.
+
+Guardrails is designed to work with **any language, framework, or LLM provider**.
+
+
+
+## Installation options
+
+You can integrate Guardrails in three ways:
+
+1. **SDK (recommended)** – Best developer experience
+2. **REST API** – Language-agnostic
+3. **Self-hosted engine** – Advanced / enterprise use cases
+
+
+
+## Install via npm (SDK)
+
+```bash
+npm install @aayushgid/guardrailz-sdk
+````
+
+Or with Yarn:
+
+```bash
+yarn add @aayushgid/guardrailz-sdk
+```
+
+
+
+## Install via CDN (browser usage)
+
+```html
+<script src="https://your-domain.com/sdk/guardrails-sdk.js"></script>
+```
+
+This exposes a global `Guardrails` object.
+
+
+
+## Environment variables
+
+Create an API key in the dashboard and set it as an environment variable.
+
+```bash
+GUARDRAILS_API_KEY=gr_live_xxxxxxxxx
+GUARDRAILS_BASE_URL=https://api.guardrails.dev
+```
+
+> Never expose your API key in client-side code.
+
+
+
+## Verify installation
+
+You should be able to run a basic validation request after installation.
+
+```ts
+import { GuardrailsClient } from '@aayushgid/guardrailz-sdk';
+
+const client = new GuardrailsClient({
+  apiKey: process.env.GUARDRAILS_API_KEY!,
+});
+
+await client.validate({
+  text: 'Hello world',
+  profileName: 'default',
+});
+```
+
+If this runs without errors, Guardrails is installed correctly.
+
+
+
+## Next steps
+
+* Learn how to run your first guardrail → **Quickstart**
+* Explore profiles and policies → **Core Concepts**

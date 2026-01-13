@@ -1,0 +1,77 @@
+# Analytics Queries
+
+Analytics queries transform raw events into **actionable insights**.
+
+They aggregate, filter, and compute metrics across time, profiles, and guardrails.
+
+
+
+## Query philosophy
+
+Guardrails analytics follows three principles:
+
+1. Queries are read-only
+2. Queries are deterministic
+3. Queries never affect runtime execution
+
+This ensures analytics is safe and reliable in production systems.
+
+
+
+## Common query dimensions
+
+Analytics queries typically group or filter by:
+
+- Time range (last 24h, 7d, 30d)
+- Profile
+- Guardrail name
+- API key
+- Pass / fail outcome
+
+These dimensions allow flexible analysis.
+
+
+
+## Example insights
+
+Using analytics queries, you can answer questions like:
+
+- How many guardrail executions occurred today?
+- Which guardrails fail most frequently?
+- What is the average execution latency?
+- Which profiles have the highest failure rates?
+- Are failures increasing over time?
+
+
+
+## Guardrail performance queries
+
+Guardrail-level queries compute:
+
+- Execution count per guardrail
+- Failure rate
+- Average execution time
+
+These metrics help identify:
+
+- Ineffective guardrails
+- Performance bottlenecks
+- Overly aggressive rules
+
+
+
+## Time-series queries
+
+Time-based queries enable:
+
+- Trend analysis
+- Spike detection
+- Regression monitoring
+
+They are commonly used for dashboards and alerts.
+
+
+
+## Next steps
+
+- See queries visualized in dashboards → **Dashboards**

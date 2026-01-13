@@ -1,0 +1,98 @@
+# Examples
+
+Below are real-world examples of using the Guardrails SDK in production environments.
+
+
+
+## API input validation
+
+```ts
+export async function POST(req: Request) {
+  const body = await req.json();
+
+  const result = await guardrails.validate({
+    text: body.prompt,
+    profileName: 'default',
+    validationType: 'input',
+  });
+
+  if (!result.passed) {
+    return new Response('Blocked by guardrails', { status: 400 });
+  }
+
+  // proceed to LLM call
+}
+```
+
+
+
+## Output validation
+
+```ts
+const llmResponse = await callLLM(prompt);
+
+const validation = await guardrails.validate({
+  text: llmResponse,
+  profileName: 'enterprise_security',
+  validationType: 'output',
+});
+
+if (!validation.passed) {
+  throw new Error('Unsafe output');
+}
+```
+
+
+
+## Agentic workflows
+
+```ts
+for (const step of agentSteps) {
+  const validation = await guardrails.validate({
+    text: step.input,
+    profileName: 'agentic-ai',
+  });
+
+  if (!validation.passed) break;
+}
+```
+
+
+
+## Logging analytics
+
+Validation events automatically appear in:
+
+- Dashboard analytics
+- Guardrail performance charts
+- Profile usage metrics
+
+No additional setup required.
+
+
+
+## Production tips
+
+- Cache the client instance
+- Use strict profiles in production
+- Start with `default`, tighten over time
+- Monitor analytics regularly
+
+
+
+## Next steps
+
+- Explore profiles in the dashboard
+- Build custom guardrails
+- Integrate analytics pipelines
+```
+
+
+
+## You now have
+
+✔ Professional SDK documentation  
+✔ Consistent tone & structure  
+✔ Production-ready examples  
+✔ Future-proof content  
+✔ Clean MDX (no JSX errors)

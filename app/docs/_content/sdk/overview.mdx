@@ -1,0 +1,61 @@
+# SDK Overview
+
+The Guardrails SDK provides a **lightweight, production-ready client** for integrating Guardrails into any JavaScript or TypeScript application.
+
+It enables developers to validate inputs and outputs against Guardrail profiles with minimal overhead, while preserving observability, security, and scalability.
+
+
+
+## Why use the SDK?
+
+The SDK is designed for teams that want:
+
+- Fast client-side or server-side validation
+- Secure enforcement of guardrails
+- Simple integration with existing apps
+- Automatic analytics and telemetry
+- Compatibility with profiles and policies
+
+
+
+## What the SDK does
+
+At a high level, the SDK:
+
+1. Sends content to the Guardrails API
+2. Applies the selected profile
+3. Returns structured validation results
+4. Optionally blocks, warns, or modifies content
+
+The SDK does **not** embed guardrails locally.  
+All enforcement happens on the Guardrails platform.
+
+
+
+## Supported environments
+
+The SDK works in:
+
+- Node.js (backend services, agents)
+- Server-side Next.js
+- Edge-compatible runtimes (with fetch support)
+- Browser environments (limited, validation-only)
+
+
+
+## Core concepts
+
+| Concept | Description |
+|||
+| Client | Configured instance of the SDK |
+| Profile | Named collection of guardrails |
+| Validation | Input or output enforcement |
+| Result | Structured pass/fail response |
+
+
+
+## Next steps
+
+- Learn how to initialize the client → **Client Setup**
+- Understand validation flows → **Guardrails**
+- See real integrations → **Examples**

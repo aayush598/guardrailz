@@ -1,0 +1,83 @@
+# Custom Profiles
+
+Custom profiles allow you to define **your own guardrail policies** tailored to your application.
+
+They are ideal when built-in profiles are not sufficient for your needs.
+
+
+
+## What can be customized
+
+With custom profiles, you can:
+
+- Choose exactly which guardrails run
+- Configure each guardrail independently
+- Combine input, output, and tool guardrails
+- Evolve policies without code changes
+
+
+
+## Creating a custom profile
+
+Profiles can be created via:
+
+- Dashboard UI
+- API
+- SDK (programmatic)
+
+A profile definition typically includes:
+
+- Name and description
+- Guardrails grouped by execution phase
+- Optional configuration per guardrail
+
+
+
+## Example (conceptual)
+
+```json
+{
+  "name": "my-secure-profile",
+  "inputGuardrails": [
+    { "name": "InputSize", "config": { "maxChars": 30000 } },
+    { "name": "SecretsInInput", "config": { "severity": "critical" } }
+  ],
+  "outputGuardrails": [
+    { "name": "OutputPIIRedaction" }
+  ]
+}
+````
+
+
+
+## Versioning and evolution
+
+Custom profiles can be:
+
+* Updated over time
+* Duplicated
+* Archived
+
+Guardrails ensures:
+
+* Backward compatibility
+* Safe rollout of changes
+* Analytics visibility per profile
+
+
+
+## Runtime selection
+
+Profiles are selected at runtime using:
+
+* `profileName`
+* `profileId`
+
+This allows dynamic policy enforcement per request or API key.
+
+
+
+## Next steps
+
+* Learn how profiles are compiled → **Profile Compilation**
+

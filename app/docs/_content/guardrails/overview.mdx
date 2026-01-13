@@ -1,0 +1,70 @@
+# Guardrails Overview
+
+Guardrails are **runtime enforcement units** that protect your AI system from unsafe, insecure, or non-compliant behavior.
+
+They execute **before, during, and after** model execution to ensure inputs, outputs, and tool usage follow defined rules.
+
+
+
+## What is a guardrail?
+
+A guardrail is a **self-contained policy check** that can:
+
+- Block execution
+- Modify content (redaction, sanitization)
+- Emit warnings
+- Record telemetry
+- Trigger alerts or actions
+
+Guardrails are **deterministic**, **auditable**, and **configurable**.
+
+
+
+## Where guardrails run
+
+Guardrails are applied at three primary stages:
+
+1. **Input guardrails**  
+   Validate and sanitize user or system input before model execution.
+
+2. **Output guardrails**  
+   Inspect and enforce policies on model responses.
+
+3. **Tool guardrails**  
+   Control and restrict tool or agent behavior.
+
+
+
+## Key characteristics
+
+### Modular
+Each guardrail is independent and reusable across profiles.
+
+### Composable
+Multiple guardrails can be combined into profiles.
+
+### Configurable
+Each guardrail accepts runtime configuration.
+
+### Observable
+Every execution produces analytics and audit events.
+
+
+
+## Guardrails vs filters
+
+| Guardrails | Filters |
+|-|--|
+| Runtime enforcement | Static rules |
+| Context-aware | Pattern-based |
+| Auditable | Opaque |
+| Configurable | Hardcoded |
+
+
+
+## Next steps
+
+- Learn how **Input Guardrails** work
+- Explore **Output Guardrails**
+- Understand **Tool Guardrails**
+- Learn how to write **Custom Guardrails**

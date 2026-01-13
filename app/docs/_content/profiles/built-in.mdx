@@ -1,0 +1,139 @@
+# Built-in Profiles
+
+Guardrails ships with **production-ready built-in profiles** designed for common use cases.
+
+These profiles provide **safe defaults** and can be used immediately without customization.
+
+
+
+## Why use built-in profiles?
+
+Built-in profiles are:
+
+- Battle-tested
+- Maintained by Guardrails
+- Updated as new threats emerge
+- Aligned with best practices
+
+They are ideal for:
+
+- Getting started quickly
+- Standard compliance requirements
+- Teams without security expertise
+
+
+
+## Available built-in profiles
+
+### Default
+
+A balanced profile suitable for most production applications.
+
+Includes:
+
+- Input size validation
+- Secret detection
+- Prompt injection protection
+- PII redaction
+
+Recommended for:
+- General-purpose LLM apps
+- Chatbots
+- APIs
+
+
+
+### Enterprise Security
+
+Strict controls for enterprise environments.
+
+Includes:
+
+- Secret and credential detection
+- Internal data leak prevention
+- Tool access control
+- Model version pinning
+
+Recommended for:
+- Internal tools
+- Enterprise SaaS
+- Multi-tenant platforms
+
+
+
+### Child Safety
+
+Maximum protection for child-facing or educational products.
+
+Includes:
+
+- NSFW detection
+- Hate speech filtering
+- Violence and self-harm prevention
+- Language restrictions
+
+Recommended for:
+- Education platforms
+- Child-focused apps
+
+
+
+### Healthcare
+
+Compliance-oriented profile for healthcare use cases.
+
+Includes:
+
+- PHI awareness
+- Medical advice safeguards
+- PII redaction
+- Consent enforcement
+
+Recommended for:
+- Clinical assistants
+- Healthcare chatbots
+
+
+
+### Financial
+
+Designed for finance and fintech applications.
+
+Includes:
+
+- Confidentiality enforcement
+- Defamation protection
+- PII handling
+- Auditability
+
+
+
+### Minimal
+
+Lightweight profile for development and testing.
+
+Includes:
+- Basic input size limits
+
+Recommended for:
+- Local development
+- Prototyping
+
+
+
+## Built-in profile immutability
+
+Built-in profiles:
+
+- Cannot be modified directly
+- Can be duplicated into custom profiles
+- Are versioned internally
+
+This ensures consistency and safety across deployments.
+
+
+
+## Next steps
+
+- Customize profiles → **Custom Profiles**
+- Understand how profiles are executed → **Profile Compilation**

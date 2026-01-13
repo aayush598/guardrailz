@@ -1,0 +1,88 @@
+# Validate API
+
+The **Validate API** is the core runtime endpoint used to execute guardrails against user input or model output.
+
+It evaluates content using a selected **profile**, applies configured guardrails, and returns structured enforcement results.
+
+
+
+## Endpoint
+
+```
+
+POST /api/validate
+
+````
+
+
+
+## Request Body
+
+```json
+{
+  "text": "Hello, this is a test input.",
+  "profileName": "default",
+  "validationType": "input"
+}
+````
+
+### Fields
+```
+| Field            | Type                   | Required  |  Description                      |
+| -                | -                      | --        | --                                |
+| `text`           | string                 | True        | Input or output text to validate |
+| `profileName`    | string                 | True        | Guardrail profile to apply       |
+| `validationType` | `"input"` | `"output"` | True        | Validation phase                 |
+```
+
+
+## Response
+
+```json
+{
+  "passed": false,
+  "profile": "default",
+  "results": [
+    {
+      "guardrail": "SecretsInInput",
+      "passed": false,
+      "severity": "critical",
+      "message": "Potential secret detected"
+    }
+  ],
+  "executionTimeMs": 42
+}
+```
+
+
+
+## Behavior
+
+* Guardrails execute **in order**
+* Execution stops early for **blocking** failures
+* All executions are **tracked for analytics**
+
+
+
+## Usage via SDK
+
+```ts
+import { GuardrailsClient } from '@aayushgid/guardrailz-sdk';
+
+const client = new GuardrailsClient({
+  apiKey: process.env.GUARDRAILS_API_KEY!,
+});
+
+await client.validate({
+  text: 'My input',
+  profileName: 'default',
+});
+```
+
+
+
+## Notes
+
+* Profiles define *which* guardrails run
+* Results include granular per-guardrail outcomes
+* Designed for low latency production use

@@ -1,0 +1,91 @@
+# Analytics Events
+
+Analytics events are the **atomic unit** of observability in Guardrails.
+
+Every meaningful runtime action emits a structured event that can be stored, queried, and analyzed.
+
+
+
+## Event model
+
+All analytics events share a common envelope:
+
+- `eventId` – unique identifier
+- `eventType` – event classification
+- `timestamp` – time of occurrence
+- `userId` – owning user
+- `apiKeyId` – API key (if applicable)
+- `profileId` – guardrail profile used
+- `payload` – event-specific data
+
+This model ensures consistency across event types.
+
+
+
+## Core event types
+
+### Guardrail executed
+
+Emitted whenever guardrails are evaluated.
+
+Includes:
+
+- Overall pass/fail result
+- Execution time (milliseconds)
+- Individual guardrail outcomes
+- Failure reasons (if any)
+
+This is the most common and important event type.
+
+
+
+### Profile used
+
+Emitted when a guardrail profile is resolved and applied.
+
+Useful for:
+
+- Tracking profile adoption
+- Auditing configuration usage
+- Comparing profile effectiveness
+
+
+
+### Rate limit hit
+
+Emitted when a rate limit threshold is exceeded.
+
+Includes:
+
+- Limit type (minute / day)
+- Threshold
+- Current usage
+
+Used for abuse detection and capacity planning.
+
+
+
+## Event immutability
+
+Analytics events are **append-only** and **immutable**.
+
+This guarantees:
+
+- Accurate historical reporting
+- Reliable audits
+- Tamper-resistant logs
+
+
+
+## Event extensibility
+
+New event types can be added without breaking existing analytics.
+
+This allows Guardrails to evolve as new safety and compliance needs emerge.
+
+
+
+## Next steps
+
+- Learn how events are queried → **Queries**
+- See how events power dashboards → **Dashboards**

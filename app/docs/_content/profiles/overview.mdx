@@ -1,0 +1,73 @@
+# Profiles Overview
+
+Profiles define **how guardrails are composed, configured, and executed together**.
+
+A profile represents a **policy bundle** that controls:
+
+- Which guardrails run
+- In what phase (input, output, tool, operational)
+- With what configuration
+- For which use case
+
+Profiles are the **primary abstraction** used by Guardrails to apply safety, security, and compliance rules consistently across requests.
+
+
+
+## Why profiles exist
+
+Without profiles, guardrails would need to be:
+
+- Manually enabled per request
+- Reconfigured repeatedly
+- Hard to reason about at scale
+
+Profiles solve this by providing:
+
+- **Reusable configurations**
+- **Centralized policy management**
+- **Clear separation of concerns**
+- **Production-ready defaults**
+
+
+
+## What a profile contains
+
+At a high level, a profile includes:
+
+- Metadata (name, description)
+- Input guardrails
+- Output guardrails
+- Tool guardrails
+- Optional operational guardrails
+
+Each guardrail is defined declaratively with optional configuration.
+
+
+
+## When profiles are applied
+
+Profiles are resolved and compiled:
+
+- At request time
+- Based on `profileName` or `profileId`
+- Before guardrail execution begins
+
+The compiled profile is then executed by the Guardrails engine.
+
+
+
+## Profile lifecycle
+
+1. Profile is defined (built-in or custom)
+2. Profile is selected at runtime
+3. Profile is compiled into executable guardrails
+4. Guardrails are executed
+5. Analytics are recorded
+
+
+
+## Next steps
+
+- Learn about built-in profiles → **Built-in Profiles**
+- Create your own policies → **Custom Profiles**
+- Understand compilation → **Profile Compilation**

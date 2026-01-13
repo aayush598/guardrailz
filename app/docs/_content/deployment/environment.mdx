@@ -1,0 +1,95 @@
+# Environment Setup
+
+This document explains how to configure Guardrails across different environments, from local development to production.
+
+
+
+## Supported environments
+
+Guardrails is designed to run consistently across:
+
+- Local development
+- Staging / preview environments
+- Production systems
+- Serverless platforms
+- Containerized infrastructure
+
+
+
+## Required environment variables
+
+At minimum, the following environment variables must be configured:
+
+```bash
+GUARDRAILS_API_KEY=gr_live_xxxxxxxxx
+GUARDRAILS_BASE_URL=https://api.guardrails.dev
+````
+
+### Optional variables
+
+```bash
+GUARDRAILS_TIMEOUT_MS=10000
+GUARDRAILS_RETRIES=0
+GUARDRAILS_LOG_LEVEL=info
+```
+
+
+
+## Environment separation
+
+Always use **separate API keys per environment**:
+
+| Environment | Key prefix  |
+| -- | -- |
+| Development | `gr_dev_`   |
+| Staging     | `gr_stage_` |
+| Production  | `gr_live_`  |
+
+This ensures:
+
+* Isolation of analytics
+* Safer experimentation
+* Clear audit trails
+
+
+
+## Local development
+
+For local development:
+
+```bash
+cp .env.example .env.local
+```
+
+Never commit `.env.local` to source control.
+
+
+
+## CI/CD usage
+
+In CI pipelines:
+
+* Store secrets in the CI secret manager
+* Inject variables at runtime
+* Never hardcode keys in config files
+
+Example (GitHub Actions):
+
+```yaml
+env:
+  GUARDRAILS_API_KEY: ${{ secrets.GUARDRAILS_API_KEY }}
+```
+
+
+
+## Validation
+
+To verify your setup, run a simple validation request and ensure it returns a success response.
+
+
+
+## Next steps
+
+* Learn how Guardrails enforces security → **Security**
+* Prepare for scale → **Scaling**
+
