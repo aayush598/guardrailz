@@ -1,4 +1,4 @@
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+import { GuardrailContext } from './context';
 import { GuardrailResult, GuardrailStage } from '@/modules/guardrails/engine/types';
 
 export abstract class BaseGuardrail<Config = unknown> {

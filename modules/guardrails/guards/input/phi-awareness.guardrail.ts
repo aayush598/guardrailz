@@ -1,5 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
 import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 export interface PHIAwarenessConfig {
@@ -31,15 +30,16 @@ const IDENTIFIERS = [
 ];
 
 export class PHIAwarenessGuardrail extends BaseGuardrail<PHIAwarenessConfig> {
-  constructor(config: PHIAwarenessConfig = {}) {
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as PHIAwarenessConfig;
     super('PHIAwareness', 'input', {
       mode: 'warn',
       allowDeidentified: true,
-      ...config,
+      ...resolved,
     });
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

@@ -1,5 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+
 import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
@@ -32,10 +32,11 @@ export class InternalDataLeakGuardrail extends BaseGuardrail<InternalDataLeakCon
   private readonly filePathPatterns: RegExp[];
   private readonly ipPatterns: RegExp[];
 
-  constructor(config: InternalDataLeakConfig = {}) {
-    super('InternalDataLeak', 'output', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as InternalDataLeakConfig;
+    super('InternalDataLeak', 'output', resolved);
 
-    const domains = config.internalDomains ?? ['internal', 'corp', 'local', 'intranet'];
+    const domains = resolved.internalDomains ?? ['internal', 'corp', 'local', 'intranet'];
 
     this.domainPatterns = domains.map((d) => new RegExp(`\\b[\\w.-]+\\.${d}\\b`, 'i'));
 
@@ -52,7 +53,7 @@ export class InternalDataLeakGuardrail extends BaseGuardrail<InternalDataLeakCon
     ];
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

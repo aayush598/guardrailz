@@ -1,5 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+import { GuardrailContext } from '../../engine/context';
 import { GuardrailResult } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
@@ -109,7 +109,7 @@ export class ApiRateLimitGuardrail extends BaseGuardrail<ApiRateLimitConfig> {
       case 'profileId':
         return ctx.profileId ?? null;
       case 'ip':
-        return (ctx as any).ip ?? null;
+        return ctx.ip ?? null;
       default:
         return null;
     }

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { requireAuth } from '@/shared/auth';
 import { AnalyticsQueryService } from '@/modules/analytics';
 import type { AnalyticsReadModel } from '@/modules/analytics';

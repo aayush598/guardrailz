@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 export interface PromptInjectionConfig {
   /** Minimum number of matched patterns to block */
@@ -18,8 +16,9 @@ interface InjectionMatch {
 export class PromptInjectionSignatureGuardrail extends BaseGuardrail<PromptInjectionConfig> {
   private readonly patterns: Record<string, RegExp[]>;
 
-  constructor(config: PromptInjectionConfig = {}) {
-    super('PromptInjectionSignature', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as PromptInjectionConfig;
+    super('PromptInjectionSignature', 'input', resolved);
 
     this.patterns = {
       override: [
@@ -40,7 +39,7 @@ export class PromptInjectionSignatureGuardrail extends BaseGuardrail<PromptInjec
     };
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!this.config.enabled && this.config.enabled !== undefined) {
       return this.result({
         passed: true,

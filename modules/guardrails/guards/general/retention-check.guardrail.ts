@@ -1,6 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
+import { GuardrailContext } from '../../engine/context';
 
 export interface RetentionCheckConfig {
   /**
@@ -22,20 +21,14 @@ export interface RetentionCheckConfig {
   clockSkewMs?: number;
 }
 
-interface RetentionContext {
-  createdAt: string | Date;
-  retentionDays: number;
-  policyId?: string;
-  legalHold?: boolean;
-}
-
 export class RetentionCheckGuardrail extends BaseGuardrail<RetentionCheckConfig> {
-  constructor(config: RetentionCheckConfig = {}) {
-    super('RetentionCheck', 'general', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as RetentionCheckConfig;
+    super('RetentionCheck', 'general', resolved);
   }
 
   execute(_text: string, context: GuardrailContext) {
-    const retention: RetentionContext | undefined = (context as any).retention;
+    const retention = context.retention;
 
     // No retention metadata → pass silently
     if (!retention) {

@@ -11,7 +11,7 @@
 
 import crypto from 'crypto';
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+import { GuardrailContext } from '../../engine/context';
 import {
   GuardrailResult,
   GuardrailAction,
@@ -21,6 +21,24 @@ import {
 /* ========================================================================== */
 /* 1. POLICY & TAXONOMY                                                        */
 /* ========================================================================== */
+
+type JsonPrimitive = string | number | boolean | null;
+type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
+type JsonObject = { [key: string]: JsonValue };
+
+interface ToolAccessContext {
+  toolName: string;
+  toolArgs: JsonObject;
+  agentIdentity: AgentIdentity;
+  capabilityToken?: CapabilityToken;
+  runtimeContext: RuntimeContext;
+}
+
+function hasToolAccess(ctx: GuardrailContext): ctx is GuardrailContext & {
+  toolAccess: ToolAccessContext;
+} {
+  return typeof (ctx as { toolAccess?: unknown }).toolAccess === 'object';
+}
 
 export enum ToolSensitivity {
   PUBLIC_READ = 'public_read',
@@ -84,16 +102,7 @@ export interface AgentIdentity {
   creationTime: Date;
   identityStrength: IdentityStrength;
   attestationSignature?: string;
-  metadata?: Record<string, any>;
-}
-
-// context.toolAccess is OPTIONAL → no breaking changes
-interface ToolAccessContext {
-  toolName: string;
-  toolArgs: Record<string, any>;
-  agentIdentity: AgentIdentity;
-  capabilityToken?: CapabilityToken;
-  runtimeContext: RuntimeContext;
+  metadata?: JsonObject;
 }
 
 export function getTrustScore(identity: AgentIdentity): number {
@@ -115,7 +124,7 @@ export interface CapabilityToken {
   agentId: string;
   toolName: string;
   allowedActions: ToolAction[];
-  constraints: Record<string, any>;
+  constraints: JsonObject;
   issuedAt: Date;
   expiresAt: Date;
   sessionId?: string;
@@ -160,7 +169,7 @@ export interface ToolPolicy {
   maxInvocationsPerHour?: number;
   allowedEnvironments?: Set<string>;
   auditRequired?: boolean;
-  customValidators?: Array<(args: Record<string, any>, ctx: RuntimeContext) => [boolean, string?]>;
+  customValidators?: Array<(args: JsonObject, ctx: RuntimeContext) => [boolean, string?]>;
 }
 
 export class ToolAccessPolicy {
@@ -170,7 +179,7 @@ export class ToolAccessPolicy {
       toolName: string,
       identity: AgentIdentity,
       ctx: RuntimeContext,
-      args: Record<string, any>,
+      args: JsonObject,
     ) => [PolicyDecision, string?]
   > = [];
 
@@ -187,8 +196,7 @@ export class ToolAccessPolicy {
     identity: AgentIdentity,
     token: CapabilityToken | undefined,
     ctx: RuntimeContext,
-    args: Record<string, any>,
-  ): [PolicyDecision, string, Record<string, any>] {
+  ): [PolicyDecision, string, JsonObject] {
     const policy = this.getPolicy(toolName);
     if (!policy) {
       return [PolicyDecision.DENY, 'Tool not registered', { toolName }];
@@ -255,11 +263,18 @@ export class ApprovalSystem {
 /* ========================================================================== */
 /* 6. AUDIT LOGGER                                                            */
 /* ========================================================================== */
+export interface AuditLogEntry {
+  timestamp: Date;
+  toolName: string;
+  agentId: string;
+  decision: PolicyDecision;
+  metadata?: JsonObject;
+}
 
 export class AuditLogger {
-  entries: any[] = [];
+  entries: AuditLogEntry[] = [];
 
-  log(entry: any) {
+  log(entry: AuditLogEntry): void {
     this.entries.push(entry);
   }
 }
@@ -281,7 +296,7 @@ export class ToolAccessControlGuardrail extends BaseGuardrail {
   }
 
   execute(_: string, context: GuardrailContext): GuardrailResult {
-    if (!context || !('toolAccess' in context)) {
+    if (!hasToolAccess(context)) {
       return this.result({
         passed: true,
         action: 'ALLOW',
@@ -290,7 +305,7 @@ export class ToolAccessControlGuardrail extends BaseGuardrail {
       });
     }
 
-    const toolCtx = (context as any).toolAccess;
+    const toolCtx = context.toolAccess;
 
     // Not a tool call → pass silently
     if (!toolCtx) {
@@ -302,7 +317,7 @@ export class ToolAccessControlGuardrail extends BaseGuardrail {
       });
     }
 
-    const { toolName, toolArgs, agentIdentity, capabilityToken, runtimeContext } = toolCtx;
+    const { toolName, agentIdentity, capabilityToken, runtimeContext } = toolCtx;
 
     // Verify token signature
     if (capabilityToken && !verifyCapabilityToken(capabilityToken, this.signingKey)) {
@@ -319,7 +334,6 @@ export class ToolAccessControlGuardrail extends BaseGuardrail {
       agentIdentity,
       capabilityToken,
       runtimeContext,
-      toolArgs,
     );
 
     return this.result({

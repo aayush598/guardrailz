@@ -12,7 +12,7 @@
  * ========================================================================== */
 
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+import { GuardrailContext } from '../../engine/context';
 import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* ---------------------------------------------------------------------------
@@ -34,7 +34,14 @@ interface NSFWDetectionSignal {
   matchedTerms: string[];
   severity: NSFWSeverityLevel;
   context: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
+}
+
+interface NSFWDecision {
+  severity: NSFWSeverityLevel;
+  confidence: number;
+  action: GuardrailAction;
+  reasoning: string;
 }
 
 /* ---------------------------------------------------------------------------
@@ -76,11 +83,12 @@ export class NSFWAdvancedGuardrail extends BaseGuardrail<NSFWGuardrailConfig> {
   private blocklist: Set<string>;
   private allowlist: Set<string>;
 
-  constructor(config: NSFWGuardrailConfig = {}) {
-    super('NSFWAdvanced', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as NSFWGuardrailConfig;
+    super('NSFWAdvanced', 'input', resolved);
 
-    this.blocklist = new Set(config.customBlocklist ?? []);
-    this.allowlist = new Set(config.customAllowlist ?? []);
+    this.blocklist = new Set(resolved.customBlocklist ?? []);
+    this.allowlist = new Set(resolved.customAllowlist ?? []);
 
     this.initDetectionPatterns();
     this.initContextPatterns();
@@ -149,7 +157,7 @@ export class NSFWAdvancedGuardrail extends BaseGuardrail<NSFWGuardrailConfig> {
     const decision = this.makeDecision(signals, contextModifier, context);
 
     // 7. Final result
-    return this.buildResult(decision, signals, text, context);
+    return this.buildResult(decision, signals, text);
   }
 
   /* =========================================================================
@@ -245,7 +253,9 @@ export class NSFWAdvancedGuardrail extends BaseGuardrail<NSFWGuardrailConfig> {
     if (this.roleplayIndicators.filter((r) => r.test(content)).length >= 2) modifier *= 1.4;
 
     if (context.ageVerified) modifier *= 0.8;
-    if ((context as any).priorViolations > 0) modifier *= 1.2;
+    if ((context.priorViolations ?? 0) > 0) {
+      modifier *= 1.2;
+    }
 
     return Math.max(0, Math.min(1.5, modifier));
   }
@@ -268,7 +278,7 @@ export class NSFWAdvancedGuardrail extends BaseGuardrail<NSFWGuardrailConfig> {
     signals: NSFWDetectionSignal[],
     modifier: number,
     context: GuardrailContext,
-  ) {
+  ): NSFWDecision {
     if (!signals.length) {
       return {
         severity: NSFWSeverityLevel.LEVEL_0_ALLOWED,
@@ -278,10 +288,11 @@ export class NSFWAdvancedGuardrail extends BaseGuardrail<NSFWGuardrailConfig> {
       };
     }
 
-    const scores = {
-      [NSFWSeverityLevel.LEVEL_3_CRITICAL]: 0,
-      [NSFWSeverityLevel.LEVEL_2_CONTEXTUAL]: 0,
+    const scores: Record<NSFWSeverityLevel, number> = {
+      [NSFWSeverityLevel.LEVEL_0_ALLOWED]: 0,
       [NSFWSeverityLevel.LEVEL_1_RESTRICTED]: 0,
+      [NSFWSeverityLevel.LEVEL_2_CONTEXTUAL]: 0,
+      [NSFWSeverityLevel.LEVEL_3_CRITICAL]: 0,
     };
 
     let maxConfidence = 0;
@@ -340,13 +351,8 @@ export class NSFWAdvancedGuardrail extends BaseGuardrail<NSFWGuardrailConfig> {
    * Result Builder
    * ========================================================================= */
 
-  private buildResult(
-    decision: any,
-    signals: NSFWDetectionSignal[],
-    original: string,
-    context: GuardrailContext,
-  ) {
-    const severityMap = {
+  private buildResult(decision: NSFWDecision, signals: NSFWDetectionSignal[], original: string) {
+    const severityMap: Record<NSFWSeverityLevel, GuardrailSeverity> = {
       [NSFWSeverityLevel.LEVEL_0_ALLOWED]: 'info',
       [NSFWSeverityLevel.LEVEL_1_RESTRICTED]: 'warning',
       [NSFWSeverityLevel.LEVEL_2_CONTEXTUAL]: 'warning',

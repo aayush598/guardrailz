@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { requireAuth } from '@/shared/auth';
 import { redirect } from 'next/navigation';
 import { db } from '@/shared/db/client';

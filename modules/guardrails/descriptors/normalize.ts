@@ -1,22 +1,29 @@
 import { GuardrailDescriptor } from './types';
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
 export function normalizeDescriptor(raw: unknown): GuardrailDescriptor | null {
   if (!raw) return null;
 
-  if (typeof raw === 'object' && (raw as any).name) {
+  // Canonical format: { name, config }
+  if (isRecord(raw) && typeof raw.name === 'string') {
     return {
-      name: String((raw as any).name),
-      config: (raw as any).config,
+      name: raw.name,
+      config: isRecord(raw.config) ? raw.config : raw.config,
     };
   }
 
-  if (typeof raw === 'object' && (raw as any).class) {
+  // Legacy format: { class, config }
+  if (isRecord(raw) && typeof raw.class === 'string') {
     return {
-      name: String((raw as any).class).replace(/Guardrail$/, ''),
-      config: (raw as any).config,
+      name: raw.class.replace(/Guardrail$/, ''),
+      config: isRecord(raw.config) ? raw.config : raw.config,
     };
   }
 
+  // String shorthand
   if (typeof raw === 'string') {
     return {
       name: raw.replace(/Guardrail$/, ''),

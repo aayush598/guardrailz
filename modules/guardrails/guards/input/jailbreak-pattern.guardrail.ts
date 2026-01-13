@@ -1,5 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
 import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* -------------------------------------------------------------------------- */
@@ -25,8 +24,9 @@ export interface JailbreakPatternConfig {
 export class JailbreakPatternGuardrail extends BaseGuardrail<JailbreakPatternConfig> {
   private readonly patterns: RegExp[];
 
-  constructor(config: JailbreakPatternConfig = {}) {
-    super('JailbreakPattern', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as JailbreakPatternConfig;
+    super('JailbreakPattern', 'input', resolved);
 
     this.patterns = [
       // DAN-style
@@ -48,8 +48,8 @@ export class JailbreakPatternGuardrail extends BaseGuardrail<JailbreakPatternCon
       /\b(two\s+responses|dual\s+mode|split\s+personality)\b/i,
     ];
 
-    if (config.customPatterns?.length) {
-      this.patterns.push(...config.customPatterns);
+    if (resolved.customPatterns?.length) {
+      this.patterns.push(...resolved.customPatterns);
     }
   }
 
@@ -57,7 +57,7 @@ export class JailbreakPatternGuardrail extends BaseGuardrail<JailbreakPatternCon
   /* Execution                                                                */
   /* ------------------------------------------------------------------------ */
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

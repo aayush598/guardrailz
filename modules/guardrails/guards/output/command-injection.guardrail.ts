@@ -1,6 +1,6 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
+
+import { GuardrailAction } from '@/modules/guardrails/engine/types';
 
 export interface CommandInjectionGuardrailConfig {
   /**
@@ -18,8 +18,9 @@ export interface CommandInjectionGuardrailConfig {
 export class CommandInjectionOutputGuardrail extends BaseGuardrail<CommandInjectionGuardrailConfig> {
   private readonly patterns: RegExp[];
 
-  constructor(config: CommandInjectionGuardrailConfig = {}) {
-    super('CommandInjectionOutput', 'output', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as CommandInjectionGuardrailConfig;
+    super('CommandInjectionOutput', 'output', resolved);
 
     this.patterns = [
       // Shell execution
@@ -41,11 +42,11 @@ export class CommandInjectionOutputGuardrail extends BaseGuardrail<CommandInject
       // SQL / system hybrid attacks
       /\b(drop\s+table|shutdown\s+-h)\b/i,
 
-      ...(config.extraPatterns ?? []),
+      ...(resolved.extraPatterns ?? []),
     ];
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

@@ -1,5 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
 
 export interface InputSizeConfig {
   maxChars?: number;
@@ -8,12 +7,13 @@ export interface InputSizeConfig {
 export class InputSizeGuardrail extends BaseGuardrail<InputSizeConfig> {
   private readonly maxChars: number;
 
-  constructor(config: InputSizeConfig = {}) {
-    super('InputSizeGuardrail', 'input', config);
-    this.maxChars = config.maxChars ?? 50_000;
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as InputSizeConfig;
+    super('InputSizeGuardrail', 'input', resolved);
+    this.maxChars = resolved.maxChars ?? 50_000;
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     const charCount = text.length;
 
     if (charCount > this.maxChars) {

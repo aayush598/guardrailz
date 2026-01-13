@@ -1,5 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+import { GuardrailContext } from '../../engine/context';
 import { GuardrailResult } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================

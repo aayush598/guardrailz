@@ -1,6 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
+import { GuardrailContext } from '../../engine/context';
 
 /* -------------------------------------------------------------------------- */
 /* Config                                                                      */
@@ -24,8 +23,9 @@ export interface ConfidentialityGuardrailConfig {
 export class ConfidentialityGuardrail extends BaseGuardrail<ConfidentialityGuardrailConfig> {
   private keywords: string[];
 
-  constructor(config: ConfidentialityGuardrailConfig = {}) {
-    super('Confidentiality', 'output', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as ConfidentialityGuardrailConfig;
+    super('Confidentiality', 'output', resolved);
 
     this.keywords = [
       'internal use only',
@@ -33,7 +33,7 @@ export class ConfidentialityGuardrail extends BaseGuardrail<ConfidentialityGuard
       'restricted',
       'do not share',
       'proprietary',
-      ...(config.keywords ?? []),
+      ...(resolved.keywords ?? []),
     ];
   }
 

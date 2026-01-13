@@ -1,6 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
+import { GuardrailContext } from '../../engine/context';
 
 /* ============================================================================
  * Secrets in Logs Guardrail
@@ -18,8 +17,9 @@ export interface SecretsInLogsConfig {
 export class SecretsInLogsGuardrail extends BaseGuardrail<SecretsInLogsConfig> {
   private readonly secretPatterns: Array<{ name: string; regex: RegExp }>;
 
-  constructor(config: SecretsInLogsConfig = {}) {
-    super('SecretsInLogs', 'output', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as SecretsInLogsConfig;
+    super('SecretsInLogs', 'output', resolved);
 
     this.secretPatterns = [
       {

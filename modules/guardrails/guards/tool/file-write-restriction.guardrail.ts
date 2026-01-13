@@ -1,11 +1,7 @@
 import path from 'path';
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import {
-  GuardrailAction,
-  GuardrailResult,
-  GuardrailSeverity,
-} from '@/modules/guardrails/engine/types';
+import { GuardrailContext } from '../../engine/context';
+import { GuardrailResult } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
  * Config
@@ -43,28 +39,18 @@ export interface FileWriteRestrictionConfig {
  * Guardrail
  * ========================================================================== */
 export class FileWriteRestrictionGuardrail extends BaseGuardrail<FileWriteRestrictionConfig> {
-  constructor(config: FileWriteRestrictionConfig = {}) {
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as FileWriteRestrictionConfig;
+
     super('FileWriteRestriction', 'tool', {
       allowRelativePaths: false,
       blockHiddenFiles: true,
-      ...config,
+      ...resolved,
     });
   }
 
   execute(_: string, context: GuardrailContext): GuardrailResult {
-    const toolAccess = (context as any)?.toolAccess;
-
-    // Not a tool call
-    if (!toolAccess) {
-      return this.result({
-        passed: true,
-        action: 'ALLOW',
-        severity: 'info',
-        message: 'No tool invocation detected',
-      });
-    }
-
-    const { toolName, toolArgs } = toolAccess;
+    const { toolName, toolArgs } = context;
 
     // Only enforce on file write–type tools
     if (!this.isFileWriteTool(toolName, toolArgs)) {
@@ -132,7 +118,7 @@ export class FileWriteRestrictionGuardrail extends BaseGuardrail<FileWriteRestri
    * Helpers
    * ========================================================================= */
 
-  private isFileWriteTool(toolName?: string, toolArgs?: any): boolean {
+  private isFileWriteTool(toolName?: string, toolArgs?: Record<string, unknown>): boolean {
     if (!toolName) return false;
     if (/file|fs|write/i.test(toolName)) return true;
     if (toolArgs?.operation === 'write') return true;

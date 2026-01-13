@@ -1,20 +1,17 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useUser, UserButton } from '@clerk/nextjs';
 import { Shield, Menu, X, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { useEffect, useState } from 'react';
 
 export function MarketingNavbar() {
-  const pathname = usePathname();
   const router = useRouter();
   const { isSignedIn } = useUser();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const isLanding = pathname === '/';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -29,15 +26,6 @@ export function MarketingNavbar() {
     { label: 'Pricing', href: '/pricing' },
     { label: 'Docs', href: '/docs' },
   ];
-
-  const navigate = (href: string) => {
-    if (href.startsWith('#') && isLanding) {
-      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      router.push(href.startsWith('#') ? '/' : href);
-    }
-    setMobileMenuOpen(false);
-  };
 
   const scrollToSection = (href: string) => {
     if (href.startsWith('#')) {

@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* -------------------------------------------------------------------------- */
 /* Config                                                                      */
@@ -18,8 +16,9 @@ export interface SandboxedOutputConfig {
 export class SandboxedOutputGuardrail extends BaseGuardrail<SandboxedOutputConfig> {
   private readonly patterns: RegExp[];
 
-  constructor(config: SandboxedOutputConfig = {}) {
-    super('SandboxedOutput', 'output', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as SandboxedOutputConfig;
+    super('SandboxedOutput', 'output', resolved);
 
     this.patterns = [
       // Shell commands (anywhere, not line-anchored)
@@ -40,11 +39,11 @@ export class SandboxedOutputGuardrail extends BaseGuardrail<SandboxedOutputConfi
       // PowerShell execution
       /\bInvoke-Expression\b/i,
 
-      ...(config.extraPatterns ?? []),
+      ...(resolved.extraPatterns ?? []),
     ];
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

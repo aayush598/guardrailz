@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 export interface PoliticalPersuasionConfig {
   /**
@@ -17,11 +15,12 @@ export interface PoliticalPersuasionConfig {
 }
 
 export class PoliticalPersuasionGuardrail extends BaseGuardrail<PoliticalPersuasionConfig> {
-  constructor(config: PoliticalPersuasionConfig = {}) {
-    super('PoliticalPersuasion', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as PoliticalPersuasionConfig;
+    super('PoliticalPersuasion', 'input', resolved);
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.allow('Empty or invalid input');
     }

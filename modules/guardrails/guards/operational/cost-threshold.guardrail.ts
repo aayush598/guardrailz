@@ -1,6 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
+import { GuardrailContext } from '../../engine/context';
 
 /* ============================================================================
  * Config
@@ -24,22 +23,38 @@ export interface CostThresholdConfig {
  * Guardrail
  * ========================================================================= */
 
+function normalizeCostThresholdConfig(input: unknown): CostThresholdConfig {
+  if (!input || typeof input !== 'object') {
+    throw new Error('CostThresholdGuardrail requires config');
+  }
+
+  const c = input as Partial<CostThresholdConfig>;
+
+  if (typeof c.maxCostUsd !== 'number') {
+    throw new Error('CostThresholdGuardrail requires maxCostUsd');
+  }
+
+  return {
+    maxCostUsd: c.maxCostUsd,
+    warnCostUsd: c.warnCostUsd ?? c.maxCostUsd * 0.8,
+    mode: c.mode ?? 'request',
+    includeTelemetry: c.includeTelemetry ?? true,
+  };
+}
+
 export class CostThresholdGuardrail extends BaseGuardrail<CostThresholdConfig> {
-  constructor(config?: Partial<CostThresholdConfig>) {
-    if (!config?.maxCostUsd || config.maxCostUsd <= 0) {
+  constructor(config?: unknown) {
+    const resolved = normalizeCostThresholdConfig(config);
+
+    if (resolved.maxCostUsd <= 0) {
       throw new Error('CostThresholdGuardrail requires maxCostUsd > 0');
     }
 
-    super('CostThreshold', 'general', {
-      maxCostUsd: config.maxCostUsd,
-      warnCostUsd: config.warnCostUsd ?? config.maxCostUsd * 0.8,
-      mode: config.mode ?? 'request',
-      includeTelemetry: config.includeTelemetry ?? true,
-    });
+    super('CostThreshold', 'general', resolved);
   }
 
   execute(_: string, context: GuardrailContext) {
-    const usage = (context as any)?.usage;
+    const usage = context.usage;
 
     if (!usage) {
       return this.result({

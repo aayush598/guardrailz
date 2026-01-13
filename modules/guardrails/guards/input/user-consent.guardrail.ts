@@ -1,5 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+import { GuardrailContext } from '../../engine/context';
 import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* ---------------------------------------------------------------------------
@@ -25,16 +25,28 @@ export interface UserConsentGuardrailConfig {
   requiredScopes?: string[];
 }
 
+interface UserConsent {
+  given: boolean;
+  source?: string;
+  scope?: string[];
+}
+
+type UserConsentContext = GuardrailContext & {
+  userConsent?: UserConsent;
+  processingPurpose?: string;
+};
+
 /* ---------------------------------------------------------------------------
  * Guardrail
  * ------------------------------------------------------------------------- */
 export class UserConsentValidationGuardrail extends BaseGuardrail<UserConsentGuardrailConfig> {
-  constructor(config: UserConsentGuardrailConfig = {}) {
-    super('UserConsentValidation', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as UserConsentGuardrailConfig;
+    super('UserConsentValidation', 'input', resolved);
   }
 
   execute(_text: string, context: GuardrailContext) {
-    const consent = (context as any).userConsent;
+    const { userConsent: consent } = context as UserConsentContext;
 
     // No consent object at all → violation
     if (!consent) {
@@ -76,6 +88,8 @@ export class UserConsentValidationGuardrail extends BaseGuardrail<UserConsentGua
   }
 
   private violation(message: string, context: GuardrailContext) {
+    const { processingPurpose } = context as UserConsentContext;
+
     const action: GuardrailAction = this.config.warnOnly ? 'WARN' : 'BLOCK';
     const severity: GuardrailSeverity = this.config.warnOnly ? 'warning' : 'error';
 
@@ -86,7 +100,7 @@ export class UserConsentValidationGuardrail extends BaseGuardrail<UserConsentGua
       message,
       metadata: {
         userId: context.userId,
-        purpose: (context as any).processingPurpose,
+        purpose: processingPurpose,
       },
     });
   }

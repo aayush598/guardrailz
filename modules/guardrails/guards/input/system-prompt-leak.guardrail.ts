@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 export interface SystemPromptLeakConfig {
   /**
@@ -13,8 +11,9 @@ export interface SystemPromptLeakConfig {
 export class SystemPromptLeakGuardrail extends BaseGuardrail<SystemPromptLeakConfig> {
   private readonly patterns: RegExp[];
 
-  constructor(config: SystemPromptLeakConfig = {}) {
-    super('SystemPromptLeak', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as SystemPromptLeakConfig;
+    super('SystemPromptLeak', 'input', resolved);
 
     this.patterns = [
       // Direct requests
@@ -34,7 +33,7 @@ export class SystemPromptLeakGuardrail extends BaseGuardrail<SystemPromptLeakCon
     ];
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

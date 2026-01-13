@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
  * Violence Severity Levels
@@ -33,11 +31,12 @@ export interface ViolenceGuardrailConfig {
  * Violence Guardrail
  * ========================================================================== */
 export class ViolenceGuardrail extends BaseGuardrail<ViolenceGuardrailConfig> {
-  constructor(config: ViolenceGuardrailConfig = {}) {
-    super('Violence', 'input', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as ViolenceGuardrailConfig;
+    super('Violence', 'input', resolved);
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

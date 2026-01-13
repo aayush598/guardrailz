@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* -------------------------------------------------------------------------- */
 /* Config                                                                      */
@@ -23,8 +21,9 @@ export interface InternalEndpointGuardrailConfig {
 export class InternalEndpointLeakGuardrail extends BaseGuardrail<InternalEndpointGuardrailConfig> {
   private readonly patterns: RegExp[];
 
-  constructor(config: InternalEndpointGuardrailConfig = {}) {
-    super('InternalEndpointLeak', 'output', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as InternalEndpointGuardrailConfig;
+    super('InternalEndpointLeak', 'output', resolved);
 
     this.patterns = [
       // localhost & loopback
@@ -48,12 +47,12 @@ export class InternalEndpointLeakGuardrail extends BaseGuardrail<InternalEndpoin
       /:\b(2375|2376|3306|5432|6379|9200|27017)\b/,
     ];
 
-    if (config.additionalPatterns?.length) {
-      this.patterns.push(...config.additionalPatterns);
+    if (resolved.additionalPatterns?.length) {
+      this.patterns.push(...resolved.additionalPatterns);
     }
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

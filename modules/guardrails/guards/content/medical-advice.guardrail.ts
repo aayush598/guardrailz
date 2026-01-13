@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* -------------------------------------------------------------------------- */
 /* Config                                                                      */
@@ -31,10 +29,11 @@ export class MedicalAdviceGuardrail extends BaseGuardrail<MedicalAdviceGuardrail
 
   private customBlocklist: Set<string>;
 
-  constructor(config: MedicalAdviceGuardrailConfig = {}) {
-    super('MedicalAdvice', 'input', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as MedicalAdviceGuardrailConfig;
+    super('MedicalAdvice', 'input', resolved);
 
-    this.customBlocklist = new Set((config.customBlocklist ?? []).map((v) => v.toLowerCase()));
+    this.customBlocklist = new Set((resolved.customBlocklist ?? []).map((v) => v.toLowerCase()));
 
     /* ------------------------- Diagnosis Detection ------------------------- */
     this.diagnosisPatterns = [
@@ -64,7 +63,7 @@ export class MedicalAdviceGuardrail extends BaseGuardrail<MedicalAdviceGuardrail
     ];
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

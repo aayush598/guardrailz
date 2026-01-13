@@ -1,6 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
 import type { GuardrailContext } from '@/modules/guardrails/engine/context';
-import type { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* -------------------------------------------------------------------------- */
 /* Config                                                                      */
@@ -22,12 +21,13 @@ export interface TelemetryEnforcementConfig {
 /* -------------------------------------------------------------------------- */
 
 export class TelemetryEnforcementGuardrail extends BaseGuardrail<TelemetryEnforcementConfig> {
-  constructor(config: TelemetryEnforcementConfig = {}) {
-    super('TelemetryEnforcement', 'general', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as TelemetryEnforcementConfig;
+    super('TelemetryEnforcement', 'general', resolved);
   }
 
   execute(_text: string, context: GuardrailContext) {
-    const telemetry = (context as any)?.telemetry;
+    const telemetry = context.telemetry;
 
     const requireTelemetry = this.config.requireTelemetry ?? true;
     const requireAudit = this.config.requireAuditLogging ?? false;

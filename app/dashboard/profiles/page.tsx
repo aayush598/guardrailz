@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { requireAuth } from '@/shared/auth';
 import { db } from '@/shared/db/client';
 import { profiles } from '@/shared/db/schema';

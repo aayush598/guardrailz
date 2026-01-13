@@ -1,5 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+import { GuardrailContext } from '../../engine/context';
 import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* ========================================================================== */
@@ -48,15 +48,16 @@ export class DestructiveToolCallGuardrail extends BaseGuardrail<DestructiveToolC
     /\b\*\b/,
   ];
 
-  constructor(config: DestructiveToolCallConfig = {}) {
-    super('DestructiveToolCall', 'tool', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as DestructiveToolCallConfig;
+    super('DestructiveToolCall', 'tool', resolved);
   }
 
   execute(_: string, context: GuardrailContext) {
-    const toolAccess = (context as any)?.toolAccess;
+    const { toolName, toolArgs } = context;
 
     // Not a tool invocation
-    if (!toolAccess) {
+    if (!toolName) {
       return this.result({
         passed: true,
         action: 'ALLOW',
@@ -64,8 +65,6 @@ export class DestructiveToolCallGuardrail extends BaseGuardrail<DestructiveToolC
         message: 'No tool invocation detected',
       });
     }
-
-    const { toolName, toolArgs } = toolAccess;
 
     // Explicit allowlist
     if (this.config.allowlist?.includes(toolName)) {

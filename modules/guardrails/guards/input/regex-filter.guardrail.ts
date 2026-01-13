@@ -1,5 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import type { GuardrailContext } from '@/modules/guardrails/engine/context';
 import type { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
@@ -50,7 +49,7 @@ export class RegexFilterGuardrail extends BaseGuardrail<RegexFilterConfig> {
     this.compileRules(validatedConfig.rules);
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,
@@ -96,7 +95,7 @@ export class RegexFilterGuardrail extends BaseGuardrail<RegexFilterConfig> {
         const regex = new RegExp(rule.pattern, rule.flags);
         this.compiledRules.push({ regex, rule });
       } catch (err) {
-        throw new Error(`Invalid regex pattern: ${rule.pattern}`);
+        throw new Error(`Invalid regex pattern: ${rule.pattern}. Error : ${err}`);
       }
     }
   }
@@ -109,6 +108,12 @@ export class RegexFilterGuardrail extends BaseGuardrail<RegexFilterConfig> {
         return 'warning';
       case 'BLOCK':
         return 'error';
+      case 'MODIFY':
+        return 'info'; // or 'warning' depending on semantics
+      default: {
+        const _exhaustive: never = action;
+        return _exhaustive;
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+import { GuardrailContext } from '../../engine/context';
 import { GuardrailResult } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
@@ -31,12 +31,13 @@ export interface IAMToolAccessContext {
  * Guardrail
  * ------------------------------------------------------------------------- */
 export class IAMPermissionGuardrail extends BaseGuardrail<IAMPermissionGuardrailConfig> {
-  constructor(config: IAMPermissionGuardrailConfig = {}) {
-    super('IAMPermission', 'tool', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as IAMPermissionGuardrailConfig;
+    super('IAMPermission', 'tool', resolved);
   }
 
   execute(_: string, context: GuardrailContext): GuardrailResult {
-    const toolAccess = (context as any)?.toolAccess as IAMToolAccessContext | undefined;
+    const toolAccess = context.toolAccess as IAMToolAccessContext | undefined;
 
     /* ------------------------------------------------------------
      * No tool invocation → allow

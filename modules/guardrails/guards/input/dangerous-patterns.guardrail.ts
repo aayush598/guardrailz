@@ -1,5 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
 import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 export interface DangerousPatternsConfig {
@@ -47,15 +46,16 @@ export class DangerousPatternsGuardrail extends BaseGuardrail<DangerousPatternsC
     ],
   };
 
-  constructor(config: DangerousPatternsConfig = {}) {
-    super('DangerousPatterns', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as DangerousPatternsConfig;
+    super('DangerousPatterns', 'input', resolved);
 
-    if (config.customPatterns?.length) {
-      this.patterns.exploit.push(...config.customPatterns);
+    if (resolved.customPatterns?.length) {
+      this.patterns.exploit.push(...resolved.customPatterns);
     }
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

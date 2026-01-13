@@ -1,6 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
+import { GuardrailContext } from '../../engine/context';
 
 /* ============================================================================
  * Config
@@ -30,23 +29,37 @@ export interface ModelVersionPinConfig {
  * Guardrail
  * ========================================================================== */
 
-export class ModelVersionPinGuardrail extends BaseGuardrail<ModelVersionPinConfig> {
-  constructor(config?: Partial<ModelVersionPinConfig>) {
-    const resolved: ModelVersionPinConfig = {
-      allowedModels: config?.allowedModels ?? [],
-      requireExplicitVersion: config?.requireExplicitVersion ?? true,
-      strict: config?.strict ?? true,
+function normalizeModelVersionPinConfig(input: unknown): ModelVersionPinConfig {
+  if (!input || typeof input !== 'object') {
+    return {
+      allowedModels: [],
+      requireExplicitVersion: true,
+      strict: true,
     };
+  }
+
+  const c = input as Partial<ModelVersionPinConfig>;
+
+  return {
+    allowedModels: Array.isArray(c.allowedModels) ? c.allowedModels : [],
+    requireExplicitVersion: c.requireExplicitVersion ?? true,
+    strict: c.strict ?? true,
+  };
+}
+
+export class ModelVersionPinGuardrail extends BaseGuardrail<ModelVersionPinConfig> {
+  constructor(config?: unknown) {
+    const resolved = normalizeModelVersionPinConfig(config);
 
     super('ModelVersionPin', 'general', resolved);
 
-    if (this.config.allowedModels.length === 0) {
+    if (resolved.allowedModels.length === 0) {
       throw new Error('ModelVersionPinGuardrail requires allowedModels');
     }
   }
 
   execute(_: string, context: GuardrailContext) {
-    const model = (context as any)?.model;
+    const model = context.model;
 
     if (!model || typeof model !== 'string') {
       return this.result({

@@ -55,12 +55,13 @@ const SCRIPT_REGEX: Record<string, RegExp> = {
  * Guardrail
  * ========================================================================== */
 export class LanguageRestrictionGuardrail extends BaseGuardrail<ResolvedLanguageRestrictionConfig> {
-  constructor(config: LanguageRestrictionConfig = {}) {
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as LanguageRestrictionConfig;
     super('LanguageRestriction', 'input', {
-      allowedScripts: config.allowedScripts ?? ['latin'],
-      minAllowedRatio: config.minAllowedRatio ?? 0.95,
-      maxDisallowedChars: config.maxDisallowedChars ?? 2,
-      warnOnly: config.warnOnly ?? false,
+      allowedScripts: resolved.allowedScripts ?? ['latin'],
+      minAllowedRatio: resolved.minAllowedRatio ?? 0.95,
+      maxDisallowedChars: resolved.maxDisallowedChars ?? 2,
+      warnOnly: resolved.warnOnly ?? false,
     });
   }
 

@@ -1,6 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
+import { GuardrailContext } from '../../engine/context';
 
 export interface ApiKeyRotationConfig {
   /** Minimum signals required to trigger rotation */
@@ -14,13 +13,15 @@ export interface ApiKeyRotationConfig {
 }
 
 export class ApiKeyRotationTriggerGuardrail extends BaseGuardrail<ApiKeyRotationConfig> {
-  constructor(config: ApiKeyRotationConfig = {}) {
-    super('ApiKeyRotationTrigger', 'general', {
+  constructor(config?: unknown) {
+    const resolved: ApiKeyRotationConfig = {
       signalThreshold: 1,
       blockOnTrigger: false,
       enableTelemetry: true,
-      ...config,
-    });
+      ...((config as ApiKeyRotationConfig) ?? {}),
+    };
+
+    super('ApiKeyRotationTrigger', 'general', resolved);
   }
 
   execute(_: string, context: GuardrailContext) {
@@ -58,7 +59,7 @@ export class ApiKeyRotationTriggerGuardrail extends BaseGuardrail<ApiKeyRotation
   }
 
   private extractSignals(context: GuardrailContext): string[] {
-    const sec = (context as any).securitySignals;
+    const sec = context.securitySignals;
     if (!sec) return [];
 
     const signals: string[] = [];

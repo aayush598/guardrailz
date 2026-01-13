@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* -------------------------------------------------------------------------- */
 /* Configuration                                                              */
@@ -17,11 +15,12 @@ export interface HallucinationRiskConfig {
 /* -------------------------------------------------------------------------- */
 
 export class HallucinationRiskGuardrail extends BaseGuardrail<HallucinationRiskConfig> {
-  constructor(config: HallucinationRiskConfig = {}) {
-    super('HallucinationRisk', 'output', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as HallucinationRiskConfig;
+    super('HallucinationRisk', 'output', resolved);
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

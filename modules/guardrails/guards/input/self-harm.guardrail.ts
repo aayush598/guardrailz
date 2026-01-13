@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
  * Self-Harm Guardrail
@@ -30,11 +28,12 @@ interface DetectionSignal {
 }
 
 export class SelfHarmGuardrail extends BaseGuardrail<SelfHarmGuardrailConfig> {
-  constructor(config: SelfHarmGuardrailConfig = {}) {
-    super('SelfHarm', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as SelfHarmGuardrailConfig;
+    super('SelfHarm', 'input', resolved);
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

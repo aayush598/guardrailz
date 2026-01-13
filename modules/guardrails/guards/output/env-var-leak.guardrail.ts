@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
  * Config
@@ -23,8 +21,9 @@ export interface EnvVarLeakGuardrailConfig {
 export class EnvVarLeakGuardrail extends BaseGuardrail<EnvVarLeakGuardrailConfig> {
   private readonly patterns: RegExp[];
 
-  constructor(config: EnvVarLeakGuardrailConfig = {}) {
-    super('EnvVarLeak', 'output', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as EnvVarLeakGuardrailConfig;
+    super('EnvVarLeak', 'output', resolved);
 
     const defaultVars = [
       'AWS_SECRET_ACCESS_KEY',
@@ -38,7 +37,7 @@ export class EnvVarLeakGuardrail extends BaseGuardrail<EnvVarLeakGuardrailConfig
       'NODE_ENV',
     ];
 
-    const vars = config.sensitiveVars ?? defaultVars;
+    const vars = resolved.sensitiveVars ?? defaultVars;
 
     this.patterns = [
       // process.env.SECRET
@@ -49,7 +48,7 @@ export class EnvVarLeakGuardrail extends BaseGuardrail<EnvVarLeakGuardrailConfig
     ];
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

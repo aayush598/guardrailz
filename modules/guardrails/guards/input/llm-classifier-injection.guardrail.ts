@@ -34,11 +34,12 @@ interface InjectionSignal {
  * Guardrail
  * ========================================================================== */
 export class LLMClassifierInjectionGuardrail extends BaseGuardrail<ResolvedLLMClassifierInjectionConfig> {
-  constructor(config: LLMClassifierInjectionConfig = {}) {
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as LLMClassifierInjectionConfig;
     super('LLMClassifierInjection', 'input', {
-      blockThreshold: config.blockThreshold ?? 0.8,
-      warnThreshold: config.warnThreshold ?? 0.25,
-      enableExplainability: config.enableExplainability ?? true,
+      blockThreshold: resolved.blockThreshold ?? 0.8,
+      warnThreshold: resolved.warnThreshold ?? 0.25,
+      enableExplainability: resolved.enableExplainability ?? true,
     });
   }
 

@@ -1,5 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import type { GuardrailContext } from '@/modules/guardrails/engine/context';
 import type { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 export interface RoleplayInjectionConfig {
@@ -22,8 +21,9 @@ export interface RoleplayInjectionConfig {
 export class RoleplayInjectionGuardrail extends BaseGuardrail<RoleplayInjectionConfig> {
   private readonly patterns: RegExp[];
 
-  constructor(config: RoleplayInjectionConfig = {}) {
-    super('RoleplayInjection', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as RoleplayInjectionConfig;
+    super('RoleplayInjection', 'input', resolved);
 
     this.patterns = [
       // Persona / identity switching
@@ -40,7 +40,7 @@ export class RoleplayInjectionGuardrail extends BaseGuardrail<RoleplayInjectionC
     ];
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

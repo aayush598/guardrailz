@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
  * Hate Speech Guardrail
@@ -40,17 +38,16 @@ const BASE_SLURS = [
 
 const VIOLENCE_PATTERNS = [/\b(kill|hang|burn|eliminate|eradicate|shoot)\b/i];
 
-const ABUSE_PATTERNS = [/\b(hate|disgusting|inferior|subhuman|vermin|filthy)\b/i];
-
 export class HateSpeechGuardrail extends BaseGuardrail<HateSpeechGuardrailConfig> {
   private slurs: Set<string>;
 
-  constructor(config: HateSpeechGuardrailConfig = {}) {
-    super('HateSpeech', 'input', config);
-    this.slurs = new Set([...BASE_SLURS, ...(config.customSlurs ?? [])]);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as HateSpeechGuardrailConfig;
+    super('HateSpeech', 'input', resolved);
+    this.slurs = new Set([...BASE_SLURS, ...(resolved.customSlurs ?? [])]);
   }
 
-  execute(text: string, context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.allow('Empty or invalid input');
     }
@@ -63,7 +60,6 @@ export class HateSpeechGuardrail extends BaseGuardrail<HateSpeechGuardrailConfig
     }
 
     const slurHits = this.findSlurs(normalized);
-    const abuseHits = this.matchAny(ABUSE_PATTERNS, normalized);
     const violenceHits = this.matchAny(VIOLENCE_PATTERNS, normalized);
 
     // Hard block: slur + violence or abuse

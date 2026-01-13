@@ -1,9 +1,21 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
 
 interface SecretPattern {
   name: string;
   regex: RegExp;
+}
+
+export interface SecretsInInputGuardrailConfig {
+  /**
+   * Optional allowlist of secret types (by name)
+   * If provided, only these secrets will be checked
+   */
+  allowlist?: string[];
+
+  /**
+   * If true, WARN instead of BLOCK
+   */
+  warnOnly?: boolean;
 }
 
 export class SecretsInInputGuardrail extends BaseGuardrail {
@@ -18,11 +30,12 @@ export class SecretsInInputGuardrail extends BaseGuardrail {
     { name: 'JWT Token', regex: /eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g },
   ];
 
-  constructor(config = {}) {
-    super('SecretsInInputGuardrail', 'input', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as SecretsInInputGuardrailConfig;
+    super('SecretsInInputGuardrail', 'input', resolved);
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     const findings: Array<{ type: string; masked: string }> = [];
 
     for (const pattern of this.patterns) {

@@ -1,6 +1,6 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
+
+import { GuardrailAction } from '@/modules/guardrails/engine/types';
 
 /* ============================================================================
  * Config
@@ -28,11 +28,12 @@ export interface CitationRequiredConfig {
  * ========================================================================= */
 
 export class CitationRequiredGuardrail extends BaseGuardrail<CitationRequiredConfig> {
-  constructor(config: CitationRequiredConfig = {}) {
-    super('CitationRequired', 'output', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as CitationRequiredConfig;
+    super('CitationRequired', 'output', resolved);
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (this.config.enabled === false) {
       return this.allow('Guardrail disabled');
     }
@@ -75,7 +76,7 @@ export class CitationRequiredGuardrail extends BaseGuardrail<CitationRequiredCon
    * Helpers
    * ========================================================================= */
 
-  private allow(message: string, metadata?: Record<string, any>) {
+  private allow(message: string, metadata?: Record<string, unknown>) {
     return this.result({
       passed: true,
       action: 'ALLOW',

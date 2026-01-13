@@ -1,5 +1,5 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+
 import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 export interface OverrideInstructionConfig {
@@ -17,8 +17,9 @@ export interface OverrideInstructionConfig {
 export class OverrideInstructionGuardrail extends BaseGuardrail<OverrideInstructionConfig> {
   private readonly patterns: RegExp[];
 
-  constructor(config: OverrideInstructionConfig = {}) {
-    super('OverrideInstruction', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as OverrideInstructionConfig;
+    super('OverrideInstruction', 'input', resolved);
 
     this.patterns = [
       // Direct override attempts
@@ -36,11 +37,11 @@ export class OverrideInstructionGuardrail extends BaseGuardrail<OverrideInstruct
       // Safety disabling
       /\b(no\s+rules|without\s+restrictions|remove\s+safety)\b/i,
 
-      ...(config.customPatterns ?? []),
+      ...(resolved.customPatterns ?? []),
     ];
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

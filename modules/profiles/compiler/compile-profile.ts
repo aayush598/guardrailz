@@ -1,5 +1,6 @@
 import { RuntimeProfile } from '../domain/runtime-profile';
 import { normalizeDescriptor } from '@/modules/guardrails/descriptors/normalize';
+import { isNonNull } from '@/shared/types/guards';
 
 export function compileProfile(profile: {
   id: string;
@@ -8,11 +9,11 @@ export function compileProfile(profile: {
   outputGuardrails: unknown[];
   toolGuardrails: unknown[];
 }): RuntimeProfile {
-  const input = profile.inputGuardrails.map(normalizeDescriptor).filter(Boolean);
+  const input = profile.inputGuardrails.map(normalizeDescriptor).filter(isNonNull);
 
-  const output = profile.outputGuardrails.map(normalizeDescriptor).filter(Boolean);
+  const output = profile.outputGuardrails.map(normalizeDescriptor).filter(isNonNull);
 
-  const tool = profile.toolGuardrails.map(normalizeDescriptor).filter(Boolean);
+  const tool = profile.toolGuardrails.map(normalizeDescriptor).filter(isNonNull);
 
   return {
     id: profile.id,

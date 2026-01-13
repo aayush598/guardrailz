@@ -1,6 +1,6 @@
 import Ajv, { ErrorObject } from 'ajv';
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
+
 import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* -------------------------------------------------------------------------- */
@@ -11,7 +11,7 @@ export interface OutputSchemaValidationConfig {
   /**
    * JSON Schema to validate against
    */
-  schema: Record<string, any>;
+  schema: Record<string, unknown>;
 
   /**
    * If true, invalid schema results in WARN instead of BLOCK
@@ -34,15 +34,17 @@ export class OutputSchemaValidationGuardrail extends BaseGuardrail<OutputSchemaV
   private ajv: Ajv;
   private validateFn: ReturnType<Ajv['compile']>;
 
-  constructor(config?: Partial<OutputSchemaValidationConfig>) {
-    if (!config?.schema) {
-      throw new Error('OutputSchemaValidationGuardrail requires a `schema` in config');
+  constructor(config?: unknown) {
+    const resolved = config as Partial<OutputSchemaValidationConfig> | undefined;
+
+    if (!resolved?.schema) {
+      throw new Error('OutputSchemaValidationGuardrail requires a `schema`');
     }
 
     super('OutputSchemaValidation', 'output', {
-      schema: config.schema,
-      warnOnly: config.warnOnly ?? false,
-      allowNonJson: config.allowNonJson ?? false,
+      schema: resolved.schema,
+      warnOnly: resolved.warnOnly ?? false,
+      allowNonJson: resolved.allowNonJson ?? false,
     });
 
     this.ajv = new Ajv({
@@ -50,10 +52,10 @@ export class OutputSchemaValidationGuardrail extends BaseGuardrail<OutputSchemaV
       strict: false,
     });
 
-    this.validateFn = this.ajv.compile(config.schema);
+    this.validateFn = this.ajv.compile(resolved.schema);
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (typeof text !== 'string' || !text.trim()) {
       return this.result({
         passed: true,
@@ -63,7 +65,7 @@ export class OutputSchemaValidationGuardrail extends BaseGuardrail<OutputSchemaV
       });
     }
 
-    let parsed: any;
+    let parsed: unknown;
 
     try {
       parsed = JSON.parse(text);

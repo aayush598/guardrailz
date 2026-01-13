@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 export interface BinaryAttachmentGuardrailConfig {
   /** Minimum length to consider something a payload */
@@ -16,12 +14,13 @@ export interface BinaryAttachmentGuardrailConfig {
 export class BinaryAttachmentGuardrail extends BaseGuardrail<BinaryAttachmentGuardrailConfig> {
   private readonly minLength: number;
 
-  constructor(config: BinaryAttachmentGuardrailConfig = {}) {
-    super('BinaryAttachment', 'input', config);
-    this.minLength = config.minPayloadLength ?? 256;
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as BinaryAttachmentGuardrailConfig;
+    super('BinaryAttachment', 'input', resolved);
+    this.minLength = resolved.minPayloadLength ?? 256;
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

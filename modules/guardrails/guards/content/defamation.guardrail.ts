@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* -------------------------------------------------------------------------- */
 /* Config                                                                      */
@@ -27,10 +25,11 @@ export class DefamationGuardrail extends BaseGuardrail<DefamationGuardrailConfig
   private wrongdoingPatterns: RegExp[];
   private allegationQualifiers: RegExp[];
 
-  constructor(config: DefamationGuardrailConfig = {}) {
-    super('Defamation', 'input', config);
+  constructor(config?: unknown) {
+    const resolved = (config ?? {}) as DefamationGuardrailConfig;
+    super('Defamation', 'input', resolved);
 
-    const terms = config.wrongdoingTerms ?? [
+    const terms = resolved.wrongdoingTerms ?? [
       'fraud',
       'scam',
       'criminal',
@@ -56,7 +55,7 @@ export class DefamationGuardrail extends BaseGuardrail<DefamationGuardrailConfig
     ];
   }
 
-  execute(text: string, _context: GuardrailContext) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,

@@ -1,6 +1,4 @@
 import { BaseGuardrail } from '@/modules/guardrails/engine/base.guardrails';
-import { GuardrailContext } from '@/modules/guardrails/engine/context';
-import { GuardrailAction, GuardrailSeverity } from '@/modules/guardrails/engine/types';
 
 /* -------------------------------------------------------------------------- */
 /* Config                                                                      */
@@ -26,8 +24,9 @@ export interface CrossContextManipulationConfig {
 export class CrossContextManipulationGuardrail extends BaseGuardrail<CrossContextManipulationConfig> {
   private readonly patterns: RegExp[];
 
-  constructor(config: CrossContextManipulationConfig = {}) {
-    super('CrossContextManipulation', 'input', config);
+  constructor(config: unknown = {}) {
+    const resolved = (config ?? {}) as CrossContextManipulationConfig;
+    super('CrossContextManipulation', 'input', resolved);
 
     this.patterns = [
       // Prior conversation references
@@ -48,12 +47,12 @@ export class CrossContextManipulationGuardrail extends BaseGuardrail<CrossContex
       /\boverride\s+(the\s+)?(rules|instructions|system)\b/i,
     ];
 
-    if (config.additionalPatterns?.length) {
-      this.patterns.push(...config.additionalPatterns);
+    if (resolved.additionalPatterns?.length) {
+      this.patterns.push(...resolved.additionalPatterns);
     }
   }
 
-  execute(text: string, _context: GuardrailContext = {}) {
+  execute(text: string) {
     if (!text || typeof text !== 'string') {
       return this.result({
         passed: true,
