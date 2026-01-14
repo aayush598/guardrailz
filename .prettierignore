@@ -1,0 +1,3 @@
+# Drizzle generated files
+drizzle/meta/**
+drizzle/*.sql
