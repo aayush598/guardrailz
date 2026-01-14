@@ -20,7 +20,7 @@ import type { ReactNode } from 'react';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
-import { getDashboardStats } from './stats';
+import { getDashboardStats } from './_data/stats';
 
 interface StatCardProps {
   title: string;
