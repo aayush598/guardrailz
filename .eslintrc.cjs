@@ -9,12 +9,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: [
-        'tailwind.config.js',
-        'postcss.config.js',
-        'next.config.js',
-        '*.config.js',
-      ],
+      files: ['tailwind.config.js', 'postcss.config.js', 'next.config.js', '*.config.js'],
       rules: {
         '@typescript-eslint/no-require-imports': 'off',
       },
