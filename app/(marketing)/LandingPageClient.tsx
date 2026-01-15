@@ -373,58 +373,71 @@ export default function LandingPageClient() {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section id="how-it-works" className="relative bg-gradient-to-b from-blue-50 to-white py-20">
+      <section id="how-it-works" className="relative bg-gradient-to-b from-slate-50 to-white py-24">
         <div className="container mx-auto px-4">
-          <div className="mb-16 text-center">
-            <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-gray-700">
+          {/* Header */}
+          <div className="mb-20 text-center">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-700">
               <Code className="h-4 w-4" />
-              <span>Simple Integration</span>
+              <span>Developer Friendly</span>
             </div>
-            <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
+            <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
               Get Started in Minutes
             </h2>
-            <p className="mx-auto max-w-2xl text-xl text-gray-600">
-              Simple integration process with powerful results
+            <p className="mx-auto max-w-2xl text-lg text-slate-600">
+              Three simple steps to protect and scale your AI applications.
             </p>
           </div>
 
-          <div className="mx-auto grid max-w-5xl gap-12 md:grid-cols-3">
+          <div className="relative mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
+            <div
+              className="absolute left-[15%] right-[15%] top-12 hidden h-0.5 border-t-2 border-dashed border-slate-300 md:block"
+              aria-hidden="true"
+            ></div>
+
             {[
               {
                 step: '1',
                 icon: Key,
                 title: 'Generate API Key',
-                desc: 'Sign up and create your API key instantly from the dashboard. No credit card required for free tier.',
+                desc: 'Sign up and create your API key instantly. No credit card required for our generous free tier.',
+                color: 'bg-slate-700',
               },
               {
                 step: '2',
                 icon: Code,
                 title: 'Integrate API',
-                desc: 'Add our REST API or SDK to your application with just a few lines of code. Full documentation included.',
+                desc: 'Add our lightweight SDK to your app with just 3 lines of code. Works with all major frameworks.',
+                color: 'bg-slate-700',
               },
               {
                 step: '3',
                 icon: BarChart3,
                 title: 'Monitor & Scale',
-                desc: 'Track usage, view analytics, and scale your guardrails as your application grows.',
+                desc: 'Track latency and token usage in real-time. Scale your guardrails as your traffic grows.',
+                color: 'bg-slate-700',
               },
-            ].map((item, idx) => (
-              <div key={item.step} className="relative text-center">
-                {idx < 2 && (
-                  <div className="absolute left-full top-10 hidden h-0.5 w-full -translate-x-1/2 bg-gradient-to-r from-gray-400 to-gray-300 md:block"></div>
-                )}
-                <div className="relative mb-6 inline-block">
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-600 opacity-30 blur-2xl"></div>
-                  <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-800 to-gray-600 text-3xl font-bold text-white shadow-xl">
+            ].map((item) => (
+              <div
+                key={item.step}
+                className="group relative flex flex-col items-center text-center"
+              >
+                <div className="relative mb-8">
+                  <div
+                    className={`absolute -right-2 -top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full ${item.color} text-sm font-bold text-white shadow-lg ring-4 ring-white`}
+                  >
                     {item.step}
                   </div>
+
+                  <div className="relative flex h-24 w-24 items-center justify-center rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:border-transparent group-hover:shadow-xl">
+                    <item.icon className="h-10 w-10 text-slate-700" />
+                  </div>
                 </div>
-                <div className="mb-4 inline-block rounded-2xl border border-gray-200 bg-white p-4 shadow-lg">
-                  <item.icon className="h-10 w-10 text-gray-600" />
+
+                <div className="px-4">
+                  <h3 className="mb-3 text-xl font-bold text-slate-900">{item.title}</h3>
+                  <p className="text-base leading-relaxed text-slate-500">{item.desc}</p>
                 </div>
-                <h3 className="mb-3 text-xl font-bold text-gray-900">{item.title}</h3>
-                <p className="leading-relaxed text-gray-600">{item.desc}</p>
               </div>
             ))}
           </div>
