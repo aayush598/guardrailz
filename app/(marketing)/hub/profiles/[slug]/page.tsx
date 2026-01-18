@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { PROFILES, guardrailCatalog } from '@/modules/hub/data';
 import {
   Heart,
-  Share2,
   Shield,
   ArrowLeft,
   CheckCircle2,
@@ -19,6 +18,7 @@ import { Badge } from '@/shared/ui/badge';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { Separator } from '@/shared/ui/separator';
 import { HubIcon } from '../../icon-map';
+import { HubShareButton } from '@/shared/ui/share-buttons';
 
 export default async function ProfileDetailPage({ params }: { params: { slug: string } }) {
   const profile = PROFILES.find((p) => p.slug === params.slug);
@@ -117,9 +117,7 @@ export default async function ProfileDetailPage({ params }: { params: { slug: st
                       <Button variant="outline" className="w-full justify-center">
                         <Heart className="mr-2 h-4 w-4" /> Like
                       </Button>
-                      <Button variant="outline" className="w-full justify-center">
-                        <Share2 className="mr-2 h-4 w-4" /> Share
-                      </Button>
+                      <HubShareButton className="w-full justify-center" />
                     </div>
                   </div>
                 </div>

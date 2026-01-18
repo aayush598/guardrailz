@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
 import { Badge } from '@/shared/ui/badge';
 import { HubIcon } from '../../icon-map';
+import { HubShareButton } from '@/shared/ui/share-buttons';
 
 export default function GuardrailPage({ params }: { params: { slug: string } }) {
   const guardrail = GUARDRAILS.find((g) => g.slug === params.slug);
@@ -125,10 +126,7 @@ export default function GuardrailPage({ params }: { params: { slug: string } }) 
                 <Heart className="mr-2 h-4 w-4" />
                 Save to Favorites
               </Button>
-              <Button variant="outline" className="border-slate-300 hover:bg-slate-50">
-                <Share2 className="mr-2 h-4 w-4" />
-                Share
-              </Button>
+              <HubShareButton className="border-slate-300 hover:bg-slate-50" />
             </div>
           </div>
         </div>
