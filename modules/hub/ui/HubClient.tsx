@@ -14,11 +14,12 @@ import { HubGrid } from './HubGrid';
 export function HubClient() {
   const [query, setQuery] = useState('');
   const [tags, setTags] = useState<HubTag[]>([]);
+  const [filterType, setFilterType] = useState<'all' | 'guardrail' | 'profile'>('all');
   const [sortBy, setSortBy] = useState<HubSortKey>('views');
 
   const items = useMemo(
-    () => queryHubItems(HUB_CATALOG, { query, tags }, sortBy),
-    [query, tags, sortBy],
+    () => queryHubItems(HUB_CATALOG, { query, tags, type: filterType }, sortBy),
+    [query, tags, sortBy, filterType],
   );
 
   const stats = useMemo(() => computeHubStats(items), [items]);
@@ -33,6 +34,7 @@ export function HubClient() {
         onClear={() => {
           setQuery('');
           setTags([]);
+          setFilterType('all');
         }}
         stats={stats}
       />
@@ -41,8 +43,10 @@ export function HubClient() {
         <HubTopbar
           query={query}
           sortBy={sortBy}
+          filterType={filterType}
           onQueryChange={setQuery}
           onSortChange={setSortBy}
+          onFilterTypeChange={setFilterType}
         />
 
         <HubGrid items={items} />

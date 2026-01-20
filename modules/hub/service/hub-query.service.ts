@@ -10,7 +10,9 @@ export function queryHubItems(items: HubItem[], filter: HubFilter, sortBy: HubSo
       const matchesTags =
         filter.tags.length === 0 || filter.tags.every((t) => item.tags.includes(t));
 
-      return matchesQuery && matchesTags;
+      const matchesType = filter.type === 'all' || item.type === filter.type;
+
+      return matchesQuery && matchesTags && matchesType;
     })
     .sort((a, b) => {
       if (sortBy === 'name') {

@@ -25,7 +25,7 @@ This profile is designed to be "set and forget" for standard use cases like cust
       'output-pii-redaction',
     ],
     tags: ['input', 'security'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'package',
     stats: { views: 2200, likes: 540, shares: 140 },
     benefits: [
@@ -96,7 +96,7 @@ This profile focuses heavily on *outbound* data security—ensuring that secrets
       'model-version-pin',
     ],
     tags: ['enterprise', 'security'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'shield',
     stats: { views: 980, likes: 210, shares: 54 },
     benefits: [
@@ -174,7 +174,7 @@ It goes beyond simple filtering to include IAM permission checks and tool access
       'audit-log-enforcement',
     ],
     tags: ['enterprise', 'security'],
-    stage: 'maintenance',
+    stage: 'development',
     icon: 'shield',
     stats: { views: 3100, likes: 890, shares: 230 },
     benefits: [
@@ -243,7 +243,7 @@ The primary goal here is **Tenant Isolation**. It ensures that a prompt from Cus
       'cost-threshold',
     ],
     tags: ['security'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'grid',
     stats: { views: 1450, likes: 320, shares: 89 },
     benefits: [
@@ -311,7 +311,7 @@ Our **Healthcare (HIPAA)** profile is purpose-built for the rigorous demands of 
       'user-consent-validation',
     ],
     tags: ['healthcare', 'compliance'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'heart',
     stats: { views: 1240, likes: 290, shares: 77 },
     benefits: [
@@ -373,7 +373,7 @@ It includes specialized checks to prevent the model from making unauthorized fin
       'model-version-pin',
     ],
     tags: ['finance', 'compliance'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'lock',
     stats: { views: 1670, likes: 402, shares: 110 },
     benefits: [
@@ -432,7 +432,7 @@ This profile has a very low tolerance false negatives—it would rather block a 
     `.trim(),
     guardrails: ['nsfw-content', 'hate-speech', 'violence', 'self-harm', 'language-restriction'],
     tags: ['content-safety'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'heart',
     stats: { views: 780, likes: 102, shares: 33 },
     benefits: [
@@ -493,7 +493,7 @@ It handles the tricky edge cases of public interaction: handling trolls, avoidin
       'citation-required',
     ],
     tags: ['content-safety'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'message',
     stats: { views: 2100, likes: 480, shares: 130 },
     benefits: [
@@ -610,7 +610,7 @@ However, it maintains basic sanity checks (like huge payload protection and tele
     `.trim(),
     guardrails: ['input-size', 'rate-limit', 'telemetry-enforcement'],
     tags: ['input'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'code',
     stats: { views: 1320, likes: 301, shares: 88 },
     benefits: [
@@ -668,7 +668,7 @@ It is designed to stop expensive queries before they hit the LLM provider, savin
     `.trim(),
     guardrails: ['rate-limit', 'cost-threshold', 'model-version-pin', 'quality-threshold'],
     tags: ['finance'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'trending-down',
     stats: { views: 960, likes: 188, shares: 52 },
     benefits: [
@@ -729,7 +729,7 @@ Use this profile when you need to be ready for a GDPR audit or a legal discovery
       'right-to-erasure',
     ],
     tags: ['compliance', 'privacy'],
-    stage: 'completed',
+    stage: 'development',
     icon: 'clipboard',
     stats: { views: 740, likes: 141, shares: 39 },
     benefits: [

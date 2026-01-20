@@ -13,7 +13,15 @@ export function HubCard({ item }: { item: HubItem }) {
         <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 text-blue-600 transition-colors group-hover:from-blue-100 group-hover:to-indigo-100">
           <HubIcon name={item.icon} />
         </div>
-        <Badge className="text-xs font-medium">{item.type}</Badge>
+        <Badge
+          className={`text-xs font-medium ${
+            item.type === 'guardrail'
+              ? 'bg-purple-50 text-purple-700 hover:bg-purple-100'
+              : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+          }`}
+        >
+          {item.type}
+        </Badge>
       </div>
 
       <h3 className="mb-2 text-base font-semibold leading-snug text-slate-900 transition-colors group-hover:text-blue-600">
