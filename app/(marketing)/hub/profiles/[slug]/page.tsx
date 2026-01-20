@@ -20,6 +20,24 @@ import { Separator } from '@/shared/ui/separator';
 import { HubIcon } from '../../icon-map';
 import { HubShareButton } from '@/shared/ui/share-buttons';
 
+const STAGE_CONFIG = {
+  completed: {
+    label: 'Production Ready',
+    className: 'border-green-200 text-green-700',
+    dotClassName: 'bg-green-500',
+  },
+  development: {
+    label: 'Beta / Experimental',
+    className: 'border-yellow-200 text-yellow-700',
+    dotClassName: 'bg-yellow-500',
+  },
+  maintenance: {
+    label: 'Maintenance Mode',
+    className: 'border-orange-200 text-orange-700',
+    dotClassName: 'bg-orange-500',
+  },
+};
+
 export default async function ProfileDetailPage({ params }: { params: { slug: string } }) {
   const profile = PROFILES.find((p) => p.slug === params.slug);
 
@@ -39,6 +57,9 @@ export default async function ProfileDetailPage({ params }: { params: { slug: st
   const guardrails = profile.guardrails
     .map((id) => guardrailCatalog.find((g) => g.id === id))
     .filter(Boolean);
+
+  const stageInfo =
+    STAGE_CONFIG[profile.stage as keyof typeof STAGE_CONFIG] || STAGE_CONFIG.development;
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
@@ -69,18 +90,10 @@ export default async function ProfileDetailPage({ params }: { params: { slug: st
                   </div>
                   <Badge
                     variant="outline"
-                    className={`bg-white/50 backdrop-blur-sm ${
-                      profile.stage === 'completed'
-                        ? 'border-green-200 text-green-700'
-                        : 'border-yellow-200 text-yellow-700'
-                    } `}
+                    className={`bg-white/50 backdrop-blur-sm ${stageInfo.className}`}
                   >
-                    <div
-                      className={`mr-1.5 h-1.5 w-1.5 rounded-full ${
-                        profile.stage === 'completed' ? 'bg-green-500' : 'bg-yellow-500'
-                      }`}
-                    />
-                    {profile.stage === 'completed' ? 'Production Ready' : 'Beta / Experimental'}
+                    <div className={`mr-1.5 h-1.5 w-1.5 rounded-full ${stageInfo.dotClassName}`} />
+                    {stageInfo.label}
                   </Badge>
                 </div>
 
