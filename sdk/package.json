@@ -1,17 +1,35 @@
 {
-  "name": "@aayushgid/guardrailz-sdk",
+  "name": "@guardrailz/sdk",
   "version": "0.1.0",
-  "description": "Official Guardrailz SDK",
+  "description": "Official JavaScript SDK for Guardrailz — enterprise-grade AI guardrails and validation",
+  "author": "Aayush <aayushgid598@gmail.com>",
   "license": "MIT",
-  "type": "module",
+  "homepage": "https://guardrailz.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aayush598/guardrailz"
+  },
+  "bugs": {
+    "url": "https://github.com/aayush598/guardrailz/issues"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "guardrails",
+    "security",
+    "sdk",
+    "validation",
+    "openai",
+    "ai-safety"
+  ],
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
@@ -21,9 +39,7 @@
     "build": "tsup",
     "prepublishOnly": "npm run build"
   },
-  "devDependencies": {
-    "ts-node": "^10.9.2",
-    "tsup": "^8.0.0",
-    "typescript": "^5.9.3"
+  "engines": {
+    "node": ">=18"
   }
 }

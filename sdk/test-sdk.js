@@ -1,8 +1,9 @@
-import { GuardrailsClient } from '@aayushgid/guardrailz-sdk';
+/* eslint-disable no-console */
+import { GuardrailsClient } from '@guardrailz/sdk';
 
 const client = new GuardrailsClient({
-  baseUrl: 'http://localhost:3000',
-  apiKey: 'grd_live_Wcqb_Jlvzzt3MDkKMKHgwKa72XCHzGiP',
+  baseUrl: 'https://guardrailz.vercel.app',
+  apiKey: 'grd_....',
 });
 
 client
