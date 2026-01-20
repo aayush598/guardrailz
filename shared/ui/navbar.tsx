@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useUser, UserButton } from '@clerk/nextjs';
 import { Shield, Menu, X, ArrowRight } from 'lucide-react';
@@ -8,7 +8,6 @@ import { Button } from '@/shared/ui/button';
 import { useEffect, useState } from 'react';
 
 export function Navbar() {
-  const router = useRouter();
   const pathname = usePathname();
   const { isSignedIn } = useUser();
 
@@ -83,33 +82,32 @@ export function Navbar() {
           <div className="hidden items-center space-x-4 md:flex">
             {isSignedIn ? (
               <div className="flex items-center gap-4">
-                <Button
-                  onClick={() => router.push('/dashboard')}
-                  size="sm"
-                  className="rounded-full bg-gray-700 text-white hover:bg-gray-800"
-                >
-                  Go to Dashboard
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link href="/dashboard">
+                  <Button
+                    size="sm"
+                    className="rounded-full bg-gray-700 text-white hover:bg-gray-800"
+                  >
+                    Go to Dashboard
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
                 <UserButton afterSignOutUrl="/" />
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => router.push('/sign-in')}
-                  className="text-gray-600"
-                >
-                  Sign In
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => router.push('/sign-up')}
-                  className="rounded-full bg-gray-900 text-white hover:bg-gray-800"
-                >
-                  Get Started
-                </Button>
+                <Link href="/sign-in">
+                  <Button variant="ghost" size="sm" className="text-gray-600">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/sign-up">
+                  <Button
+                    size="sm"
+                    className="rounded-full bg-gray-900 text-white hover:bg-gray-800"
+                  >
+                    Get Started
+                  </Button>
+                </Link>
               </div>
             )}
           </div>
@@ -151,10 +149,14 @@ export function Navbar() {
               })}
               {!isSignedIn && (
                 <div className="mt-4 grid grid-cols-2 gap-2 px-3">
-                  <Button variant="outline" onClick={() => router.push('/sign-in')}>
-                    Sign In
-                  </Button>
-                  <Button onClick={() => router.push('/sign-up')}>Sign Up</Button>
+                  <Link href="/sign-in">
+                    <Button variant="outline" className="w-full">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/sign-up">
+                    <Button className="w-full">Sign Up</Button>
+                  </Link>
                 </div>
               )}
             </div>
