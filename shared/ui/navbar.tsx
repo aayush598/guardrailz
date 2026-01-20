@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { useUser, UserButton } from '@clerk/nextjs';
 import { Shield, Menu, X, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
@@ -28,16 +29,6 @@ export function Navbar() {
     { label: 'Docs', href: '/docs' },
   ];
 
-  const scrollToSection = (href: string) => {
-    if (href.startsWith('#')) {
-      const element = document.querySelector(href);
-      element?.scrollIntoView({ behavior: 'smooth' });
-      setMobileMenuOpen(false);
-    } else {
-      router.push(href);
-    }
-  };
-
   return (
     <nav
       className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -50,10 +41,7 @@ export function Navbar() {
         <div className="relative flex h-20 items-center justify-between">
           {/* 1. Logo Section (Left) */}
           <div className="flex flex-shrink-0 items-center">
-            <div
-              className="group flex cursor-pointer items-center space-x-3"
-              onClick={() => router.push('/')}
-            >
+            <Link href="/" className="group flex cursor-pointer items-center space-x-3">
               <div className="relative">
                 <div className="absolute inset-0 rounded-xl bg-gray-500 opacity-20 blur-md transition-opacity group-hover:opacity-40"></div>
                 <div className="relative rounded-xl bg-gray-900 p-2">
@@ -61,7 +49,7 @@ export function Navbar() {
                 </div>
               </div>
               <span className="text-xl font-bold tracking-tight text-gray-900">Guardrailz</span>
-            </div>
+            </Link>
           </div>
 
           {/* 2. Desktop Navigation (Center - Perfectly Aligned) */}
@@ -71,9 +59,9 @@ export function Navbar() {
                 item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
 
               return (
-                <button
+                <Link
                   key={item.label}
-                  onClick={() => scrollToSection(item.href)}
+                  href={item.href}
                   className={`group relative px-4 py-2 text-sm font-semibold transition-colors ${
                     isActive ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'
                   }`}
@@ -86,7 +74,7 @@ export function Navbar() {
                       isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                     }`}
                   />
-                </button>
+                </Link>
               );
             })}
           </div>
@@ -147,9 +135,10 @@ export function Navbar() {
                   item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
 
                 return (
-                  <button
+                  <Link
                     key={item.label}
-                    onClick={() => scrollToSection(item.href)}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
                     className={`block w-full rounded-lg px-3 py-2 text-left text-base font-medium transition-colors ${
                       isActive
                         ? 'bg-gray-100 text-gray-900'
@@ -157,7 +146,7 @@ export function Navbar() {
                     }`}
                   >
                     {item.label}
-                  </button>
+                  </Link>
                 );
               })}
               {!isSignedIn && (
