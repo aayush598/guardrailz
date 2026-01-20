@@ -27,6 +27,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/shared/ui/dialog';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
 
 interface ApiKey {
   id: string;
@@ -44,6 +54,9 @@ export default function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }
   const [keys, setKeys] = useState(initialKeys);
   const [visible, setVisible] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [newKeyName, setNewKeyName] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
 
   const toggleVisibility = (id: string) => {
     setVisible((s) => {
@@ -81,6 +94,30 @@ export default function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }
     setKeys((k) => k.filter((x) => x.id !== id));
   };
 
+  const createKey = async () => {
+    if (!newKeyName.trim()) return;
+
+    setIsCreating(true);
+    try {
+      const res = await fetch('/api/keys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newKeyName }),
+      });
+
+      if (!res.ok) throw new Error('Failed to create key');
+
+      const { apiKey } = await res.json();
+      setKeys((prev) => [apiKey, ...prev]);
+      setIsCreateOpen(false);
+      setNewKeyName('');
+    } catch (error) {
+      alert(`Failed to create API key: ${error}`);
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   const mask = (k: string) => `${k.slice(0, 10)}•••••••••••••••••••••••••${k.slice(-6)}`;
 
   return (
@@ -92,10 +129,43 @@ export default function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }
           <p className="text-sm text-slate-600">Manage and monitor your API keys</p>
         </div>
 
-        <Button className="bg-slate-900 text-white hover:bg-slate-800">
+        <Button
+          className="bg-slate-900 text-white hover:bg-slate-800"
+          onClick={() => setIsCreateOpen(true)}
+        >
           <Plus className="mr-2 h-4 w-4" />
           Create API Key
         </Button>
+
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New API Key</DialogTitle>
+              <DialogDescription>
+                Create a new API key to access the Guardrails API.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name">Key Name</Label>
+                <Input
+                  id="name"
+                  placeholder="e.g. Production App 1"
+                  value={newKeyName}
+                  onChange={(e) => setNewKeyName(e.target.value)}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={createKey} disabled={isCreating || !newKeyName.trim()}>
+                {isCreating ? 'Creating...' : 'Create Key'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Table */}
@@ -199,7 +269,7 @@ export default function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }
                       <td className="px-4 py-4">
                         <div className="flex w-[160px] justify-end gap-1">
                           {/* Analytics */}
-                          <Link href={`/dashboard/api-keys/${k.id}`}>
+                          <Link href={`/ dashboard / api - keys / ${k.id}`}>
                             <Button
                               variant="ghost"
                               size="sm"
