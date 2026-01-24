@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { notFound } from 'next/navigation';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { BLOG_POSTS } from '../data';
@@ -66,10 +67,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <div className="flex flex-wrap items-center gap-6 border-t border-white/10 pt-8 text-sm text-slate-300">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 overflow-hidden rounded-full bg-slate-800 ring-2 ring-white/10">
-                <img
+                <NextImage
                   src={post.author.avatar}
                   alt={post.author.name}
+                  width={40}
+                  height={40}
                   className="h-full w-full object-cover"
+                  unoptimized
                 />
               </div>
               <div>

@@ -21,6 +21,7 @@ export function EditProfileDialog({ profile, allGuardrails, onUpdated }: EditPro
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(profile.name);
   const [description, setDescription] = useState(profile.description);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
 
@@ -35,26 +36,35 @@ export function EditProfileDialog({ profile, allGuardrails, onUpdated }: EditPro
   };
 
   const save = async () => {
-    const inputGuardrails = Object.entries(selected)
-      .filter(([, v]) => v)
-      .map(([name]) => ({ name }));
+    setIsSaving(true);
+    try {
+      const inputGuardrails = Object.entries(selected)
+        .filter(([, v]) => v)
+        .map(([name]) => ({ name }));
 
-    const res = await fetch(`/api/profiles/${profile.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        description,
-        inputGuardrails,
-        outputGuardrails: [],
-        toolGuardrails: [],
-      }),
-    });
+      const res = await fetch(`/api/profiles/${profile.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          description,
+          inputGuardrails,
+          outputGuardrails: [],
+          toolGuardrails: [],
+        }),
+      });
 
-    const data = await res.json();
-    onUpdated(data.profile);
-    toast.success('Profile updated');
-    setOpen(false);
+      if (!res.ok) throw new Error('Failed to update profile');
+
+      const data = await res.json();
+      onUpdated(data.profile);
+      toast.success('Profile updated');
+      setOpen(false);
+    } catch {
+      toast.error('Failed to update profile');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -84,10 +94,12 @@ export function EditProfileDialog({ profile, allGuardrails, onUpdated }: EditPro
           </div>
 
           <DialogFooter>
-            <Button variant="secondary" onClick={() => setOpen(false)}>
+            <Button variant="secondary" onClick={() => setOpen(false)} disabled={isSaving}>
               Cancel
             </Button>
-            <Button onClick={save}>Save</Button>
+            <Button onClick={save} disabled={isSaving}>
+              {isSaving ? 'Saving...' : 'Save'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

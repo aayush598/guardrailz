@@ -26,7 +26,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu';
+} from '@/shared/ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
@@ -35,6 +35,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/shared/ui/alert-dialog';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 
@@ -57,6 +67,7 @@ export default function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newKeyName, setNewKeyName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [keyToDelete, setKeyToDelete] = useState<string | null>(null);
 
   const toggleVisibility = (id: string) => {
     setVisible((s) => {
@@ -88,10 +99,17 @@ export default function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }
     setKeys((k) => k.map((x) => (x.id === key.id ? { ...x, isActive: !x.isActive } : x)));
   };
 
-  const deleteKey = async (id: string) => {
-    if (!confirm('Delete this API key?')) return;
-    await fetch(`/api/keys/${id}`, { method: 'DELETE' });
-    setKeys((k) => k.filter((x) => x.id !== id));
+  const confirmDelete = async () => {
+    if (!keyToDelete) return;
+
+    try {
+      await fetch(`/api/keys/${keyToDelete}`, { method: 'DELETE' });
+      setKeys((k) => k.filter((x) => x.id !== keyToDelete));
+    } catch (error) {
+      console.error('Failed to delete key:', error);
+    } finally {
+      setKeyToDelete(null);
+    }
   };
 
   const createKey = async () => {
@@ -330,7 +348,10 @@ export default function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }
                               <DropdownMenuSeparator />
 
                               <DropdownMenuItem
-                                onClick={() => deleteKey(k.id)}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setKeyToDelete(k.id);
+                                }}
                                 className="text-red-600"
                               >
                                 <Trash2 className="mr-2 h-4 w-4" />
@@ -364,6 +385,24 @@ export default function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }
           <p>• Revoke unused keys</p>
         </CardContent>
       </Card>
+
+      <AlertDialog open={!!keyToDelete} onOpenChange={(open) => !open && setKeyToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the API key and revoke all
+              access immediately. Any applications using this key will stop working.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

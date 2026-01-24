@@ -1,6 +1,7 @@
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { Toaster } from 'sonner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -21,7 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider>
       <html lang="en" className={`${inter.variable} ${jakarta.variable}`}>
-        <body className={`${inter.className} antialiased`}>{children}</body>
+        <body className={`${inter.className} antialiased`}>
+          {children}
+          <Toaster position="bottom-right" richColors />
+        </body>
       </html>
     </ClerkProvider>
   );

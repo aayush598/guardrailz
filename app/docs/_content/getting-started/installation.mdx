@@ -15,13 +15,13 @@ You can integrate Guardrails in three ways:
 ## Install via npm (SDK)
 
 ```bash
-npm install @aayushgid/guardrailz-sdk
+npm install @guardrailz/sdk
 ```
 
 Or with Yarn:
 
 ```bash
-yarn add @aayushgid/guardrailz-sdk
+yarn add @guardrailz/sdk
 ```
 
 ## Install via CDN (browser usage)
@@ -48,7 +48,7 @@ GUARDRAILS_BASE_URL=https://api.guardrails.dev
 You should be able to run a basic validation request after installation.
 
 ```ts
-import { GuardrailsClient } from '@aayushgid/guardrailz-sdk';
+import { GuardrailsClient } from '@guardrailz/sdk';
 
 const client = new GuardrailsClient({
   apiKey: process.env.GUARDRAILS_API_KEY!,

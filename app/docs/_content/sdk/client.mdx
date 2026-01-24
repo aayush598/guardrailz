@@ -9,19 +9,19 @@ It manages authentication, retries, timeouts, and communication with the Guardra
 Install the SDK via npm:
 
 ```bash
-npm install @aayushgid/guardrailz-sdk
+npm install @guardrailz/sdk
 ```
 
 Or using yarn:
 
 ```bash
-yarn add @aayushgid/guardrailz-sdk
+yarn add @guardrailz/sdk
 ```
 
 ## Creating a client
 
 ```ts
-import { GuardrailsClient } from '@aayushgid/guardrailz-sdk';
+import { GuardrailsClient } from '@guardrailz/sdk';
 
 const client = new GuardrailsClient({
   apiKey: process.env.GUARDRAILS_API_KEY!,

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { BLOG_POSTS } from './data';
 import { Clock } from 'lucide-react';
 import { Badge } from '@/shared/ui/badge';
@@ -60,10 +61,13 @@ export default function BlogListingPage() {
                 <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-6">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100">
-                      <img
+                      <NextImage
                         src={featuredPost.author.avatar}
                         alt={featuredPost.author.name}
+                        width={40}
+                        height={40}
                         className="h-full w-full rounded-full object-cover"
+                        unoptimized
                       />
                     </div>
                     <div>
