@@ -287,7 +287,7 @@ export default function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }
                       <td className="px-4 py-4">
                         <div className="flex w-[160px] justify-end gap-1">
                           {/* Analytics */}
-                          <Link href={`/ dashboard / api - keys / ${k.id}`}>
+                          <Link href={`/dashboard/api-keys/${k.id}`}>
                             <Button
                               variant="ghost"
                               size="sm"

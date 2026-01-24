@@ -3,7 +3,14 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/shared/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from '@/shared/ui/dialog';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -99,6 +106,9 @@ export function CreateProfileDialog({ children, onCreated }: CreateProfileDialog
         <DialogContent className="max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create Custom Profile</DialogTitle>
+            <DialogDescription>
+              Create a new profile with a custom set of guardrails.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
