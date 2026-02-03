@@ -834,9 +834,13 @@ export default function LandingPageClient() {
               </p>
               <div className="flex gap-4">
                 {[
-                  { icon: Github, href: '#', label: 'GitHub' },
-                  { icon: Twitter, href: '#', label: 'Twitter' },
-                  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+                  { icon: Github, href: 'https://github.com/aayush598', label: 'GitHub' },
+                  { icon: Twitter, href: 'https://x.com/AayushGid598', label: 'Twitter' },
+                  {
+                    icon: Linkedin,
+                    href: 'https://www.linkedin.com/in/aayush-gid-3767a2221/',
+                    label: 'LinkedIn',
+                  },
                 ].map((social) => (
                   <a
                     key={social.label}
