@@ -19,7 +19,7 @@ export const metadata = {
     'Guardrailz helps developers build safe AI systems with policy enforcement and monitoring.',
   keywords: ['AI guardrails', 'LLM safety', 'AI monitoring', 'AI compliance'],
   verification: {
-    google: 'KFgLDpdA_8ujeUi43-x9ylKW7EExlpYUmmPVA8Yf4-4a',
+    google: 'KFgLDpdA_8ujeUi43-x9ylKW7EExlpYUmmPVA8Yf4-4',
   },
   openGraph: {
     title: 'Guardrailz',
