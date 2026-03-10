@@ -70,6 +70,11 @@ module.exports = {
           ring: 'hsl(var(--sidebar-ring))',
         },
       },
+      fontFamily: {
+        inter: ['var(--font-inter)', 'sans-serif'],
+        jakarta: ['var(--font-jakarta)', 'sans-serif'],
+        pj: ['var(--font-jakarta)', 'sans-serif'],
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
