@@ -1,5 +1,6 @@
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import { Toaster } from 'sonner';
 
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Toaster position="bottom-right" richColors />
         </body>
+        <GoogleAnalytics gaId="G-PYWP1H8ZJ2" />
       </html>
     </ClerkProvider>
   );
