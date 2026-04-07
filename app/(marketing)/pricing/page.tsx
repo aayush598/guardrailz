@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Shield, CheckCircle, Github, Twitter, Linkedin, TrendingUp } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent } from '@/shared/ui/card';
+import { CheckoutButton } from '../_components/CheckoutButton';
 import Image from 'next/image';
 
 export default function LandingPage() {
@@ -98,7 +99,7 @@ export default function LandingPage() {
                 <h3 className="mb-2 text-2xl font-bold text-gray-900">Pro</h3>
                 <div className="mb-6">
                   <span className="bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-5xl font-extrabold text-transparent">
-                    ₹999
+                    ₹2
                   </span>
                   <span className="ml-2 text-gray-700">/ month</span>
                 </div>
@@ -118,9 +119,13 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full cursor-not-allowed bg-gradient-to-r from-gray-800 to-gray-600 text-white opacity-60">
-                  Coming Soon
-                </Button>
+                <CheckoutButton
+                  plan="Pro"
+                  amount={2}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+                >
+                  Subscribe to Pro
+                </CheckoutButton>
               </CardContent>
             </Card>
 
@@ -147,12 +152,13 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Button
-                  variant="outline"
-                  className="w-full cursor-not-allowed border-2 border-gray-300 font-semibold text-gray-900 opacity-60 hover:border-purple-600 hover:bg-purple-50"
+                <CheckoutButton
+                  plan="Enterprise"
+                  amount={4999}
+                  className="w-full border-2 border-purple-600 bg-purple-50 font-semibold text-purple-700 hover:bg-purple-100"
                 >
-                  Coming Soon
-                </Button>
+                  Subscribe to Enterprise
+                </CheckoutButton>
               </CardContent>
             </Card>
           </div>

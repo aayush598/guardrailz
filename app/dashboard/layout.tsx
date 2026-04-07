@@ -133,12 +133,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="relative">
                 <p className="mb-1 text-xs font-semibold text-slate-300">Free Plan</p>
                 <p className="mb-3 text-sm font-bold">Upgrade to Pro</p>
-                <Button
-                  size="sm"
-                  className="w-full bg-white font-semibold text-slate-900 shadow-lg hover:bg-slate-100"
-                >
-                  Upgrade Now
-                </Button>
+                <Link href="/pricing" className="block w-full">
+                  <Button
+                    size="sm"
+                    className="w-full bg-white font-semibold text-slate-900 shadow-lg hover:bg-slate-100"
+                  >
+                    Upgrade Now
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

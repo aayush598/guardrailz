@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { TrendingUp, CheckCircle } from 'lucide-react';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
+import { CheckoutButton } from './CheckoutButton';
 
 export default function Pricing() {
   return (
@@ -55,14 +56,14 @@ export default function Pricing() {
 
           {/* Pro Tier */}
           <Card className="relative scale-105 overflow-hidden border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-purple-50 transition-all duration-300 hover:border-blue-400 hover:shadow-2xl">
-            <div className="absolute right-0 top-0 rounded-bl-2xl bg-gradient-to-r from-gray-800 to-gray-600 px-6 py-2 text-sm font-bold text-white shadow-lg">
-              Coming Soon
+            <div className="absolute right-0 top-0 rounded-bl-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2 text-sm font-bold text-white shadow-lg">
+              Most Popular
             </div>
             <CardContent className="pt-8">
               <h3 className="mb-2 text-2xl font-bold text-gray-900">Pro</h3>
               <div className="mb-6">
-                <span className="bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-5xl font-extrabold text-transparent">
-                  ₹999
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-5xl font-extrabold text-transparent">
+                  ₹2
                 </span>
                 <span className="ml-2 text-gray-700">/ month</span>
               </div>
@@ -82,9 +83,13 @@ export default function Pricing() {
                   </li>
                 ))}
               </ul>
-              <Button className="w-full cursor-not-allowed bg-gradient-to-r from-gray-800 to-gray-600 text-white opacity-60">
-                Coming Soon
-              </Button>
+              <CheckoutButton
+                plan="Pro"
+                amount={2}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+              >
+                Subscribe to Pro
+              </CheckoutButton>
             </CardContent>
           </Card>
 
@@ -93,7 +98,8 @@ export default function Pricing() {
             <CardContent className="pt-8">
               <h3 className="mb-2 text-2xl font-bold text-gray-900">Enterprise</h3>
               <div className="mb-6">
-                <span className="text-5xl font-extrabold text-gray-900">Custom</span>
+                <span className="text-5xl font-extrabold text-gray-900">₹4999</span>
+                <span className="ml-2 text-gray-700">/ month</span>
               </div>
               <ul className="mb-8 space-y-4">
                 {[
@@ -111,12 +117,13 @@ export default function Pricing() {
                   </li>
                 ))}
               </ul>
-              <Button
-                variant="outline"
-                className="w-full cursor-not-allowed border-2 border-gray-300 font-semibold text-gray-900 opacity-60 hover:border-purple-600 hover:bg-purple-50"
+              <CheckoutButton
+                plan="Enterprise"
+                amount={4999}
+                className="w-full border-2 border-purple-600 bg-purple-50 font-semibold text-purple-700 hover:bg-purple-100"
               >
-                Coming Soon
-              </Button>
+                Subscribe to Enterprise
+              </CheckoutButton>
             </CardContent>
           </Card>
         </div>

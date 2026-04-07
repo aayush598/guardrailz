@@ -1,0 +1,27 @@
+yarn run v1.22.22
+$ tsx app/docs/_search/build-index.ts && next build
+  ▲ Next.js 14.2.25
+  - Environments: .env
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (181kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+
+Failed to compile.
+
+./app/(marketing)/_components/CheckoutButton.tsx
+41:52  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+71:41  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+72:59  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./app/api/payments/create-order/route.ts
+2:1  Error: Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free.  @typescript-eslint/ban-ts-comment
+6:16  Error: 'currentUser' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./app/api/payments/verify/route.ts
+6:14  Error: 'and' is defined but never used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

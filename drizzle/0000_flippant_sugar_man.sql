@@ -3,6 +3,7 @@ CREATE TABLE "users" (
 	"email" text NOT NULL,
 	"first_name" text,
 	"last_name" text,
+	"plan" text DEFAULT 'free' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
@@ -65,6 +66,29 @@ CREATE TABLE "user_rate_limits" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "analytics_events" (
+	"event_id" uuid PRIMARY KEY NOT NULL,
+	"event_type" text NOT NULL,
+	"user_id" text NOT NULL,
+	"api_key_id" text,
+	"profile_id" text,
+	"payload" jsonb NOT NULL,
+	"created_at" timestamp with time zone NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "orders" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"razorpay_order_id" text NOT NULL,
+	"razorpay_payment_id" text,
+	"razorpay_signature" text,
+	"plan" text NOT NULL,
+	"amount" integer NOT NULL,
+	"status" text DEFAULT 'created' NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "api_keys" ADD CONSTRAINT "api_keys_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "guardrail_executions" ADD CONSTRAINT "guardrail_executions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -73,6 +97,7 @@ ALTER TABLE "guardrail_executions" ADD CONSTRAINT "guardrail_executions_profile_
 ALTER TABLE "rate_limit_tracking" ADD CONSTRAINT "rate_limit_tracking_api_key_id_api_keys_id_fk" FOREIGN KEY ("api_key_id") REFERENCES "public"."api_keys"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "rate_limit_tracking" ADD CONSTRAINT "rate_limit_tracking_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_rate_limits" ADD CONSTRAINT "user_rate_limits_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "idx_exec_user_created" ON "guardrail_executions" USING btree ("user_id","created_at");--> statement-breakpoint
 CREATE INDEX "idx_exec_user_passed" ON "guardrail_executions" USING btree ("user_id","passed");--> statement-breakpoint
 CREATE INDEX "idx_exec_user_profile" ON "guardrail_executions" USING btree ("user_id","profile_id");
