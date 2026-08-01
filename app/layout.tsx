@@ -1,17 +1,12 @@
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { Toaster } from 'sonner';
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
-});
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-jakarta',
 });
 
 export const metadata = {
@@ -40,7 +35,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${inter.variable} ${jakarta.variable}`}>
+      <html lang="en" className={inter.variable}>
         <head>
           <script
             type="application/ld+json"

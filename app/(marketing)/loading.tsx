@@ -1,13 +1,6 @@
 export default function MarketingLoading() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Decorative blobs (match landing page) */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute left-1/4 top-0 h-96 w-96 animate-pulse rounded-full bg-blue-200/30 blur-3xl" />
-        <div className="absolute right-1/4 top-1/3 h-96 w-96 animate-pulse rounded-full bg-purple-200/30 blur-3xl delay-1000" />
-        <div className="delay-2000 absolute bottom-1/4 left-1/3 h-96 w-96 animate-pulse rounded-full bg-pink-200/20 blur-3xl" />
-      </div>
-
+    <div className="min-h-screen bg-white">
       {/* Page skeleton */}
       <div className="relative">
         <HeroSkeleton />
@@ -66,7 +59,7 @@ function SectionSkeleton() {
 function Skeleton({ className = '' }: { className?: string }) {
   return (
     <div
-      className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 ${className}`}
+      className={`animate-pulse bg-gradient-to-r from-neutral-100 via-neutral-200 to-neutral-100 ${className}`}
     />
   );
 }

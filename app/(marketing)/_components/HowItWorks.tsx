@@ -1,72 +1,77 @@
 import { Key, Code, BarChart3 } from 'lucide-react';
+import Reveal from './Reveal';
 
 export default function HowItWorks() {
   const steps = [
     {
-      step: '1',
+      step: '01',
       icon: Key,
-      title: 'Generate API Key',
-      desc: 'Sign up and create your API key instantly. No credit card required for our generous free tier.',
-      color: 'bg-slate-700',
+      title: 'Generate an API key',
+      desc: 'Sign up and create your API key instantly. No credit card required for our free tier.',
     },
     {
-      step: '2',
+      step: '02',
       icon: Code,
-      title: 'Integrate API',
-      desc: 'Add our lightweight SDK to your app with just 3 lines of code. Works with all major frameworks.',
-      color: 'bg-slate-700',
+      title: 'Integrate the SDK',
+      desc: 'Add our lightweight SDK to your app with just 3 lines of code. Works with every major framework.',
     },
     {
-      step: '3',
+      step: '03',
       icon: BarChart3,
-      title: 'Monitor & Scale',
-      desc: 'Track latency and token usage in real-time. Scale your guardrails as your traffic grows.',
-      color: 'bg-slate-700',
+      title: 'Monitor and scale',
+      desc: 'Track latency and token usage in real time. Scale your guardrails as traffic grows.',
     },
   ];
 
   return (
-    <section id="how-it-works" className="relative bg-gradient-to-b from-slate-50 to-white py-24">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="mb-20 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-            <Code className="h-4 w-4" />
-            <span>Developer Friendly</span>
-          </div>
-          <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
-            Get Started in Minutes
+    <section
+      id="how-it-works"
+      className="relative overflow-hidden border-t border-neutral-100 bg-white py-24 lg:py-32"
+    >
+      <div className="bg-glow-left pointer-events-none absolute inset-0" />
+      <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-neutral-200 to-transparent lg:block" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal className="mx-auto mb-16 max-w-2xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-4 py-1.5 text-sm font-medium text-neutral-600">
+            <Code className="h-4 w-4 text-brand-600" />
+            Developer friendly
+          </span>
+          <h2 className="mt-6 text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl">
+            Live in under 10 minutes
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-slate-600">
-            Three simple steps to protect and scale your AI applications.
+          <p className="mt-4 text-lg leading-relaxed text-neutral-600">
+            Three steps between you and production-grade AI safety.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="relative mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
+        <div className="relative mx-auto grid max-w-5xl gap-12 md:grid-cols-3 md:gap-8">
+          {/* Connecting line */}
           <div
-            className="absolute left-[15%] right-[15%] top-12 hidden h-0.5 border-t-2 border-dashed border-slate-300 md:block"
+            className="absolute left-0 right-0 top-[44px] hidden h-px bg-neutral-200 md:block"
             aria-hidden="true"
-          ></div>
+          />
 
-          {steps.map((item) => (
-            <div key={item.step} className="group relative flex flex-col items-center text-center">
-              <div className="relative mb-8">
-                <div
-                  className={`absolute -right-2 -top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full ${item.color} text-sm font-bold text-white shadow-lg ring-4 ring-white`}
-                >
-                  {item.step}
+          {steps.map((item, i) => (
+            <Reveal key={item.step} delay={i * 0.1}>
+              <div className="group relative flex flex-col items-center text-center">
+                <div className="relative mb-8">
+                  <div className="ease-smooth flex h-[88px] w-[88px] items-center justify-center rounded-2xl border border-neutral-200 bg-white shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md">
+                    <item.icon className="h-8 w-8 text-brand-600" />
+                  </div>
+                  <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 rounded-full bg-neutral-900 px-3 py-0.5 text-xs font-semibold text-white">
+                    {item.step}
+                  </div>
                 </div>
 
-                <div className="relative flex h-24 w-24 items-center justify-center rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:border-transparent group-hover:shadow-xl">
-                  <item.icon className="h-10 w-10 text-slate-700" />
-                </div>
+                <h3 className="text-lg font-semibold tracking-tight text-neutral-900">
+                  {item.title}
+                </h3>
+                <p className="mt-2.5 max-w-xs text-base leading-relaxed text-neutral-500">
+                  {item.desc}
+                </p>
               </div>
-
-              <div className="px-4">
-                <h3 className="mb-3 text-xl font-bold text-slate-900">{item.title}</h3>
-                <p className="text-base leading-relaxed text-slate-500">{item.desc}</p>
-              </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
